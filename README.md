@@ -15,7 +15,7 @@ Currently it supports:
 - Internal temperature
 - Internal voltage
 
-You will need to extra Arduino libraries to be able to compile this sketch.:
+You will need two extra Arduino libraries to be able to compile this sketch.:
 
  https://github.com/jgromes/RadioLib (Radiolib)
  https://github.com/mikalhart/TinyGPSPlus (tinyGPS++)
