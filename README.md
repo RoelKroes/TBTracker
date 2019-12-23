@@ -19,6 +19,7 @@ Currently it supports:
 You will need two extra Arduino libraries to be able to compile this sketch.:
 
  https://github.com/jgromes/RadioLib (Radiolib)
+ 
  https://github.com/mikalhart/TinyGPSPlus (tinyGPS++)
  
  
