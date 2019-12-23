@@ -105,12 +105,15 @@
 *  
 * Change if needed
 ************************************************************************************/
-// When USE_DEEP_SLEEP = true, the time between transmissions will be TX_LOOP_TIME + TIME_TO_SLEEP*8000 (in milli seconds)
+// When USE_DEEP_SLEEP = true, the time between transmissions will be TX_LOOP_TIME + TIME_TO_SLEEP*1000 (in milli seconds)
 // When USE_DEEP_SLEEP = false, the time between transmissions will be TX_LOOP_TIME (in milli seconds)
 // Allow time for the GPS to re-acquire a fix when using sleep mode!
 // Currently deep sleep is only enabled for Arduino
-#define USE_DEEP_SLEEP  false   // Put the chip to deep sleep while not transmitting true or false
-#define TIME_TO_SLEEP  2        // This number is in 8 seconds interval (so a value of 3 is 3x8=24 seconds sleep time
+//
+// USE_DEEP_SLEEP IS NOT YET IMPLEMENTED. SET TO false
+//
+#define USE_DEEP_SLEEP  false   // Put the chip to deep sleep while not transmitting true or false. For now set to false 
+#define TIME_TO_SLEEP  5        // This number is in seconds 
 #define TX_LOOP_TIME 30000      // in millis
 #define SENTENCE_LENGTH 100     // Maximum length of telemetry line to send
 
@@ -125,6 +128,36 @@
 static const int Rx = 7, Tx = 8;
 static const uint32_t GPSBaud = 9600;
 
+/***********************************************************************************
+* SENSOR SETTINGS
+*  
+* Change if needed
+* 
+*  You can connect an external voltage directly to the EXTERNALVOLTAGE_PIN as long as the the pin is rated for that voltage
+*  Alteratively, you can use a voltage divider so you can connect a higher voltage, but then you have to calculate the DIVIDER_RATIO yourself
+*  
+*  Voltage divider schema:
+*  
+*                          |-----------------
+*                          |                |
+*                          |               R1            
+*                          |                |
+*                    +/+ ---                |
+*    to external voltage                    |------ To EXTERNALVOLTAGE_PIN
+*                    -/- ---                |
+*                          |                |
+*                          |               R2  
+*                          |                |
+*                          |----------------------- To Arduino GND
+*                          
+*   DIVIDER_RATIO can be calculated by (R1+R2) / R2                       
+************************************************************************************/
+#define USE_EXTERNAL_VOLTAGE true  // Set to true if you want to measure an external voltage on the EXTERNALVOLTAGE_PIN 
+#define VCC_OFFSET 0.00            // Offset for error correction in Volts for the internal voltage. Ideally this should be 0.0 but usually is between -0.1 and +0.1 and is chip specific. 
+#define EXT_OFFSET 0.00            // Offset for error correction in Volts for the external voltage. Use it to correct errors when necessary.
+#define EXTERNALVOLTAGE_PIN A1     // Pin to read the external voltage from
+#define SAMPLE_RES 1024            // 1024 for Uno, Mini, Nano, Mega, Micro. Leonardo. 4096 for Zero, Due and MKR  
+#define DIVIDER_RATIO 1.00         // Leave at 1.00 when using no voltage divider. Set to (R1+R2)/R2 when using a voltage divider.
 
 /***********************************************************************************
 * DATA STRUCTS
@@ -232,7 +265,7 @@ void loop()
         }
      }
 
-     // Delay 1 sec between rtty and lora
+     // Delay in milliseconds between rtty and lora. You can change this
      delay(1000);
      
      // Send LoRa 
@@ -248,8 +281,7 @@ void loop()
      // Put the CPU to sleep
      if (USE_DEEP_SLEEP)
      {
-       SleepNow(); // Goodnight
+       SleepNow(); // NOT IMPLEMENTED YET!!
      }
-     UGPS.Satellites = 0;
   }
 }

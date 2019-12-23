@@ -12,18 +12,22 @@ void CreateTXLine(const char *PayloadID, unsigned long aCounter, const char *aPr
    char LatitudeString[16], LongitudeString[16], CRCString[8];
    char InternalTemp[10];
    char BattVoltage[10];
+   char ExtVoltage[10];
 
    // Get the internal chip temperature
    dtostrf(ReadTemp(), 3, 1, InternalTemp);
 
    // Get the battery voltage
    dtostrf(ReadVCC(), 4, 2,BattVoltage);
-      
+
+   // Get the external voltage
+   dtostrf(ReadExternalVoltage(), 4, 2,ExtVoltage);
+         
    dtostrf(UGPS.Latitude, 7, 5, LatitudeString);
    dtostrf(UGPS.Longitude, 7, 5, LongitudeString);   
    
    sprintf(Sentence,
-            "%s%s,%ld,%02d:%02d:%02d,%s,%s,%ld,%u,%s,%s",
+            "%s%s,%ld,%02d:%02d:%02d,%s,%s,%ld,%u,%s,%s,%s",
             aPrefix,
             PayloadID,
             aCounter,
@@ -33,7 +37,8 @@ void CreateTXLine(const char *PayloadID, unsigned long aCounter, const char *aPr
             UGPS.Altitude,
             UGPS.Satellites,
             InternalTemp,
-            BattVoltage);
+            BattVoltage,
+            ExtVoltage);
 
    Count = strlen(Sentence);
 

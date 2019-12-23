@@ -2,8 +2,13 @@
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 
-volatile char sleepCnt;
+//******************************************************************************************
+//
+//   NOT IMPLEMENTED YET
+//
+//******************************************************************************************
 
+volatile char sleepCnt;
 
 // Let the Arduino go to sleep
 void SleepNow() {
@@ -16,14 +21,14 @@ void SleepNow() {
   static byte prevADCSRA = ADCSRA;
   ADCSRA = 0;
 
-  /* Set the type of sleep mode we want. Can be one of (in order of power saving):
-   SLEEP_MODE_IDLE (Timer 0 will wake up every millisecond to keep millis running)
-   SLEEP_MODE_ADC
-   SLEEP_MODE_PWR_SAVE (TIMER 2 keeps running)
-   SLEEP_MODE_EXT_STANDBY
-   SLEEP_MODE_STANDBY (Oscillator keeps running, makes for faster wake-up)
-   SLEEP_MODE_PWR_DOWN (Deep sleep)
-   */
+//   Set the type of sleep mode we want. Can be one of (in order of power saving):
+//   SLEEP_MODE_IDLE (Timer 0 will wake up every millisecond to keep millis running)
+//   SLEEP_MODE_ADC
+//   SLEEP_MODE_PWR_SAVE (TIMER 2 keeps running)
+//   SLEEP_MODE_EXT_STANDBY
+//   SLEEP_MODE_STANDBY (Oscillator keeps running, makes for faster wake-up)
+//   SLEEP_MODE_PWR_DOWN (Deep sleep)
+  
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
   sleep_enable();
 
@@ -40,10 +45,14 @@ void SleepNow() {
     // clear various "reset" flags
     MCUSR = 0;  // allow changes, disable reset
     WDTCSR = bit (WDCE) | bit(WDE); // set interrupt mode and an interval
-    // WDTCSR = bit (WDIE) | bit(WDP2) | bit(WDP1); //| bit(WDP0);    // This is 1 sec
-    WDTCSR = bit (WDIE) | bit(WDP3) | bit(WDP0);    // This is 8 sec
+    WDTCSR = bit (WDIE) | bit(WDP2) | bit(WDP1); //| bit(WDP0);    // This is 1 sec
+    // WDTCSR = bit (WDIE) | bit(WDP3) | bit(WDP0);    // This is 8 sec
     wdt_reset();
 
+    // Send a message just to show we are about to sleep
+    Serial.println("Good night!");
+    Serial.flush();
+    
     // Allow interrupts now
     interrupts();
 

@@ -1,10 +1,35 @@
-#define VCC_OFFSET 0.05   // Offset for error correction in Volts. This can be 0.0 but usually is between -0.2 and +0.2 and is chip specific. 
-                         
+
+//===============================================================================
+// Read an external voltage from an analog PIN by referencing the 1.1v internal reference  
+// DO NOT CONNECT A HIGHER VOLTAGE THAN THE PIN IS RATED FOR (or use a voltage divider)
+float ReadExternalVoltage()
+{
+  float internalV = 0.0;
+  float externalV = 0.0;
+
+  // Get a reference to compare the external voltage with
+  internalV = ReadVCC();
+  
+  // Read the external voltage
+  if (USE_EXTERNAL_VOLTAGE)
+  {
+    analogReference(DEFAULT);
+    for (int i = 1; i <=5; i++)
+    {
+      externalV += analogRead(EXTERNALVOLTAGE_PIN);
+    }
+    externalV = externalV / 5;
+    return ((internalV / SAMPLE_RES) * externalV * DIVIDER_RATIO)+EXT_OFFSET;
+  }
+  else
+  {
+    return 0.0;
+  }
+}
+
 //===============================================================================
 // Read the VCC voltage by referencing the 1.1v internal reference
 // Useful for checking battery voltage.
-// Value will never be greater than the 3.31V + VCC_OFFSET (which is the voltage Arduino is working on)
-// The useable range for checking voltage is between 2.9v and 3.3v
 float ReadVCC() 
 {
   long result;
@@ -27,6 +52,7 @@ float ReadVCC()
    
   return (avgmv / reps / 1000.0) + VCC_OFFSET;
 }
+
 
 //===============================================================================
 // Read the internal chip temperature by referencing the 1.1v internal reference voltage
