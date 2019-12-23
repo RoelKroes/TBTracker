@@ -14,6 +14,7 @@ Currently it supports:
 - Number of satellites visible
 - Internal temperature
 - Internal voltage
+- External voltage
 
 You will need two extra Arduino libraries to be able to compile this sketch.:
 
