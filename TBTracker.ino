@@ -9,6 +9,7 @@
  * roel@kroes.com
  * 
  * Version 0.1 - 2019-12-19
+ * Version 0.2 - 2019-12-23 (Added external voltage support)
  *
  *  
  *  To run this, you need a TTGO T-Deer board or:
@@ -64,7 +65,7 @@
 #define RTTY_SHIFT 600
 #define RTTY_BAUD 75                 // Baud rate 100 and up is currently unstable. 75 Baud is recommended.
 #define RTTY_STOPBITS 2
-#define RTTY_PREFIX "$$$$"           
+#define RTTY_PREFIX "$$$$$"           
 // RTTY encoding modes (leave this unchanged)
 #define RTTY_ASCII 0                 // 7 data bits 
 #define RTTY_ASCII_EXTENDED 1        // 8 data bits
@@ -152,7 +153,7 @@ static const uint32_t GPSBaud = 9600;
 *                          
 *   DIVIDER_RATIO can be calculated by (R1+R2) / R2                       
 ************************************************************************************/
-#define USE_EXTERNAL_VOLTAGE true  // Set to true if you want to measure an external voltage on the EXTERNALVOLTAGE_PIN 
+#define USE_EXTERNAL_VOLTAGE false // Set to true if you want to measure an external voltage on the EXTERNALVOLTAGE_PIN 
 #define VCC_OFFSET 0.00            // Offset for error correction in Volts for the internal voltage. Ideally this should be 0.0 but usually is between -0.1 and +0.1 and is chip specific. 
 #define EXT_OFFSET 0.00            // Offset for error correction in Volts for the external voltage. Use it to correct errors when necessary.
 #define EXTERNALVOLTAGE_PIN A1     // Pin to read the external voltage from
