@@ -29,15 +29,15 @@
  ************************************************************************************/
 
 /***********************************************************************************
-* PIN NUMBERS
+* PIN NUMBERS for SX1278
 *  
 * Change if needed
 ************************************************************************************/
 #define PIN_NSS   10 
 #define PIN_DIO0  2
-#define PIN_BUSY  9
-#define PIN_RESET 7
-#define PIN_DIO1  -1  // Not used in this sketch
+#define PIN_BUSY  -1  // Not used in this sketch for sx1278
+#define PIN_RESET -1  // Not used in this sketch for sx1278
+#define PIN_DIO1  -1  // Not used in this sketch for sx1278
 
 /***********************************************************************************
 * DEFAULT FSK SETTINGS
@@ -60,7 +60,7 @@
 * Change when needed
 ************************************************************************************/
 #define RTTY_ENABLED true            // Set to true if you want RTTY transmissions (You can use Both LoRa and RTTY or only one of the two) 
-#define RTTY_PAYLOAD_ID  "RTTY_ID"    // Payload ID for RTTY protocol
+#define RTTY_PAYLOAD_ID  "SAMMY3"    // Payload ID for RTTY protocol
 #define RTTY_FREQUENCY  434.100      // Can be different from LoRa frequency
 #define RTTY_SHIFT 600
 #define RTTY_BAUD 75                 // Baud rate 100 and up is currently unstable. 75 Baud is recommended.
@@ -78,7 +78,7 @@
 * Change when needed
 ************************************************************************************/
 #define LORA_ENABLED true            // Set to true if you want LoRa transmissions (You can use Both LoRa and RTTY or only one of the two)
-#define LORA_PAYLOAD_ID  "LORA_ID"   // Payload ID for LoRa protocol
+#define LORA_PAYLOAD_ID  "SAMMY3L"   // Payload ID for LoRa protocol
 #define LORA_FREQUENCY  434.562      // Can be different from RTTY frequency
 #define LORA_BANDWIDTH 125.0
 #define LORA_SPREADFACTOR 9
