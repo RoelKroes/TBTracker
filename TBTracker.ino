@@ -26,6 +26,8 @@
  *  Extra librairies needed:
  *  https://github.com/jgromes/RadioLib (Radiolib)
  *  https://github.com/mikalhart/TinyGPSPlus (tinyGPS++)
+ *  
+ *  For payload information and how to get your see the file Misc.ini from this sketch
  ************************************************************************************/
 
 /***********************************************************************************
