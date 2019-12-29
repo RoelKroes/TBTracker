@@ -1,0 +1,31 @@
+Hardware installation
+
+===================
+Arduino Nano
+===================
+
+SX1278 <-> Arduino Nano
+----------------------
+MISO   -> D12
+SCK    -> D13
+RST    -> Not connected
+GND    -> GND
+DI0    -> D2
+MOSI   -> D11
+NSS    -> D10
+3V3    -> 3V3
+
+GPS <-> Arduino Nano
+-----------------------
+VCC    -> 5V (or 3V3 if your GPS is not 5V tolerant)
+GND    -> GND
+RX     -> D8
+TX     -> D7
+
+External voltage <-> Arduino Nano
+---------------------------------
+Voltage Source -> A1 (be sure not to exceed the tolerance of the pins or use a voltage divider)
+
+
+*** Other Arduino's will follow
+
