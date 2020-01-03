@@ -1,90 +1,72 @@
-#include "Arduino.h"
 #include <avr/sleep.h>
+#include <avr/power.h>
 #include <avr/wdt.h>
 
-//******************************************************************************************
-//
-//   NOT IMPLEMENTED YET
-//
-//******************************************************************************************
+int teller = 0;
 
-volatile char sleepCnt;
-
-// Let the Arduino go to sleep
-void SleepNow() {
-
-  // Send a message just to show we are about to sleep
-  Serial.println("Going to sleep");
-  Serial.flush();
-
-  // Disable the ADC (Analog to digital converter, pins A0 [14] to A5 [19])
-  static byte prevADCSRA = ADCSRA;
-  ADCSRA = 0;
-
-//   Set the type of sleep mode we want. Can be one of (in order of power saving):
-//   SLEEP_MODE_IDLE (Timer 0 will wake up every millisecond to keep millis running)
-//   SLEEP_MODE_ADC
-//   SLEEP_MODE_PWR_SAVE (TIMER 2 keeps running)
-//   SLEEP_MODE_EXT_STANDBY
-//   SLEEP_MODE_STANDBY (Oscillator keeps running, makes for faster wake-up)
-//   SLEEP_MODE_PWR_DOWN (Deep sleep)
+//===============================================================================
+void setup_Sleep(void)
+{  
+  // Setup the watchdog timer to run an interrupt which
+  // wakes the Arduino from sleep every 1 second.
   
-  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-  sleep_enable();
+  // Note that the default behavior of resetting the Arduino
+  // with the watchdog will be disabled.
+  
+  // This next section of code is timing critical, so interrupts are disabled.
+  // See more details of how to change the watchdog in the ATmega328P datasheet
+  // around page 50, Watchdog Timer.
+  noInterrupts();
+  
+  // Set the watchdog reset bit in the MCU status register to 0.
+  MCUSR &= ~(1<<WDRF);
+  
+  // Set WDCE and WDE bits in the watchdog control register.
+  WDTCSR |= (1<<WDCE) | (1<<WDE);
 
-  while (sleepCnt < TIME_TO_SLEEP) {
-
-    // Turn of Brown Out Detection (low voltage). This is automatically re-enabled upon timer interrupt
-    sleep_bod_disable();
-
-    // Ensure we can wake up again by first disabling interrupts (temporarily) so
-    // the wakeISR does not run before we are asleep and then prevent interrupts,
-    // and then defining the ISR (Interrupt Service Routine) to run when poked awake by the timer
-    noInterrupts();
-
-    // clear various "reset" flags
-    MCUSR = 0;  // allow changes, disable reset
-    WDTCSR = bit (WDCE) | bit(WDE); // set interrupt mode and an interval
-    WDTCSR = bit (WDIE) | bit(WDP2) | bit(WDP1); //| bit(WDP0);    // This is 1 sec
-    // WDTCSR = bit (WDIE) | bit(WDP3) | bit(WDP0);    // This is 8 sec
-    wdt_reset();
-
-    // Send a message just to show we are about to sleep
-    Serial.println("Good night!");
-    Serial.flush();
-    
-    // Allow interrupts now
-    interrupts();
-
-    // And enter sleep mode as set above
-    sleep_cpu();
-  }
-
-  // --------------------------------------------------------
-  // µController is now asleep until woken up by an interrupt
-  // --------------------------------------------------------
-
-  // Prevent sleep mode, so we don't enter it again, except deliberately, by code
-  sleep_disable();
-
-  // Wakes up at this point when timer wakes up µC
-  Serial.println("I'm awake!");
-
-  // Reset sleep counter
-  sleepCnt = 0;
-
-  // Re-enable ADC if it was previously running
-  ADCSRA = prevADCSRA;
+  // Set watchdog clock prescaler bits to a value of 8 seconds.
+  // WDTCSR = (1<<WDP0) | (1<<WDP3);
+  
+  // Set watchdog clock prescaler bits to a value of 1 second
+  WDTCSR = bit (WDIE) | bit(WDP2) | bit(WDP1); //| bit(WDP0);    
+  
+  // Enable watchdog as interrupt only (no reset).
+  WDTCSR |= (1<<WDIE);
+  
+  // Enable interrupts again.
+  interrupts();
 }
 
-// When WatchDog timer causes µC to wake it comes here
-ISR (WDT_vect) {
 
-  // Turn off watchdog, we don't want it to do anything (like resetting this sketch)
-  wdt_disable();
+//===============================================================================
+// Put the Arduino to sleep.
+void sleep()
+{
+  setup_Sleep();
+  // Set sleep to full power down.  Only external interrupts or 
+  // the watchdog timer can wake the CPU!
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
 
-  // Increment the WDT interrupt count
-  sleepCnt++;
+  // Turn off the ADC while asleep.
+  power_adc_disable();
 
-  // Now we continue running the main Loop() just after we went to sleep
+  // Enable sleep and enter sleep mode.
+  sleep_mode();
+
+  // CPU is now asleep and program execution completely halts!
+  // Once awake, execution will resume at this point.
+  
+  // When awake, disable sleep mode and turn on all devices.
+  sleep_disable();
+  power_all_enable();
+}
+
+//===============================================================================
+// Define watchdog timer interrupt.
+ISR(WDT_vect)
+{
+  // Set the watchdog activated flag.
+  // Note that you shouldn't do much work inside an interrupt handler.
+  watchdogActivated = true;
+  sleepIterations++;
 }
