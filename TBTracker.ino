@@ -88,7 +88,7 @@
 #define LORA_PREFIX "$$"             // Some older LoRa software does not accept a prefix of more than 2x "$"
 #define LORA_SYNCWORD 0x12           // for sx1278
 // #define LORA_SYNCWORD 0x1424      // for sx1262 (currently not supported)
-#define LORA_POWER 10  
+#define LORA_POWER 10                // in dBm between 2 and 17. 10 = 10mW
 #define LORA_CURRENTLIMIT 100
 #define LORA_PREAMBLELENGTH 8
 #define LORA_GAIN 0
@@ -108,17 +108,14 @@
 *  
 * Change if needed
 ************************************************************************************/
-// When USE_DEEP_SLEEP = true, the time between transmissions will be TX_LOOP_TIME + TIME_TO_SLEEP*1000 (in milli seconds)
-// When USE_DEEP_SLEEP = false, the time between transmissions will be TX_LOOP_TIME (in milli seconds)
-// Allow time for the GPS to re-acquire a fix when using sleep mode!
-// Currently deep sleep is only enabled for Arduino
-//
-// USE_DEEP_SLEEP IS NOT YET IMPLEMENTED. SET TO false
-//
-#define USE_DEEP_SLEEP  false   // Put the chip to deep sleep while not transmitting true or false. For now set to false 
-#define TIME_TO_SLEEP  5        // This number is in seconds 
-#define TX_LOOP_TIME 30000      // in millis
 #define SENTENCE_LENGTH 100     // Maximum length of telemetry line to send
+
+// Allow time for the GPS to re-acquire a fix when using sleep mode!
+// Currently deep sleep is only enabled for ATMEGA328
+// There is not a lot of effect as the LoRa and GPS chips consume a lot of power and these chps are currently not switched to power save mode
+#define USE_DEEP_SLEEP  false  // Put the ATMEGA328 chip to deep sleep while not transmitting. set to true or false.  
+#define TIME_TO_SLEEP  15      // This is the number in seconds out of TX_LOOP_TIME that the CPU is in sleep 
+#define TX_LOOP_TIME   30      // This number is in seconds
 
 /***********************************************************************************
 * GPS SETTINGS
@@ -223,9 +220,11 @@ struct TRTTYSettings
 ************************************************************************************/
 SoftwareSerial SerialGPS(Rx, Tx);
 char Sentence[SENTENCE_LENGTH];
-unsigned long RTTYCounter=0;
-unsigned long LoRaCounter=0;
-unsigned long previousTX = 0;
+volatile unsigned long RTTYCounter=0;
+volatile unsigned long LoRaCounter=0;
+volatile unsigned long previousTX = 0;
+volatile bool watchdogActivated = true;
+volatile int sleepIterations = 0;
 
 
 //============================================================================
@@ -246,45 +245,59 @@ void setup()
 //============================================================================
 void loop()
 {
-  unsigned long currentMillis = millis();
-   
-  // Get data from the GPS
-  CheckGPS(); 
-  smartDelay(1000);
- 
-  // Process a non blocking timed loop
-  if (currentMillis - previousTX >= TX_LOOP_TIME)
+    // Watchdog should have been fired before doing anything 
+  if (watchdogActivated)
   {
-    // Telemetry loop  
-     previousTX = currentMillis;
+     // REset the watrchdog and the sleep timer
+     watchdogActivated = false;
+     sleepIterations = 0;
      
-     // Send RTTY
-     if (RTTY_ENABLED)
-     { 
-        for (int i=1; i <= RTTY_REPEATS; i++)
-        {
-          CreateTXLine(RTTY_PAYLOAD_ID, RTTYCounter++, RTTY_PREFIX);
-          sendRTTY(Sentence); 
-        }
-     }
-
-     // Delay in milliseconds between rtty and lora. You can change this
-     delay(1000);
-     
-     // Send LoRa 
-     if (LORA_ENABLED)
-     { 
-        for (int i=1; i <= LORA_REPEATS; i++)
-        {
-          CreateTXLine(LORA_PAYLOAD_ID, LoRaCounter++, LORA_PREFIX);
-          sendLoRa(Sentence); 
-        }
-     }
-
-     // Put the CPU to sleep
-     if (USE_DEEP_SLEEP)
+     unsigned long currentMillis = millis();
+   
+     // Get data from the GPS
+     CheckGPS(); 
+     smartDelay(1000);
+ 
+     // Process a non blocking timed loop
+     if (currentMillis - previousTX >= (TX_LOOP_TIME*1000))
      {
-       SleepNow(); // NOT IMPLEMENTED YET!!
-     }
+       // Telemetry loop  
+       previousTX = currentMillis;
+     
+       // Send RTTY
+       if (RTTY_ENABLED)
+       { 
+          for (int i=1; i <= RTTY_REPEATS; i++)
+          {
+            CreateTXLine(RTTY_PAYLOAD_ID, RTTYCounter++, RTTY_PREFIX);
+            sendRTTY(Sentence); 
+          }
+       }
+
+       // Delay in milliseconds between rtty and lora. You can change this
+       delay(1000);
+     
+       // Send LoRa 
+       if (LORA_ENABLED)
+       { 
+          for (int i=1; i <= LORA_REPEATS; i++)
+          {
+            CreateTXLine(LORA_PAYLOAD_ID, LoRaCounter++, LORA_PREFIX);
+            sendLoRa(Sentence); 
+          }
+       }
+       // Goto to sleep after transmissions
+       if (USE_DEEP_SLEEP)
+       {
+         Serial.println("Going to sleep...");
+         Serial.flush();
+         while (sleepIterations < TIME_TO_SLEEP)
+         {
+           sleep();
+         }
+        Serial.println("Awake!");
+       }
+    }
+    watchdogActivated = true; 
   }
 }
