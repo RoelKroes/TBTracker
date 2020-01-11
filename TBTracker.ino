@@ -64,8 +64,8 @@
 #define RTTY_ENABLED true            // Set to true if you want RTTY transmissions (You can use Both LoRa and RTTY or only one of the two) 
 #define RTTY_PAYLOAD_ID  "RTTY-ID"    // Payload ID for RTTY protocol
 #define RTTY_FREQUENCY  434.100      // Can be different from LoRa frequency
-#define RTTY_SHIFT 600
-#define RTTY_BAUD 75                 // Baud rate 100 and up is currently unstable. 75 Baud is recommended.
+#define RTTY_SHIFT 800
+#define RTTY_BAUD 200                 // Baud rate 100 and up is currently unstable. 75 Baud is recommended.
 #define RTTY_STOPBITS 2
 #define RTTY_PREFIX "$$$$$"           
 // RTTY encoding modes (leave this unchanged)
@@ -113,10 +113,12 @@
 // Allow time for the GPS to re-acquire a fix when using sleep mode!
 // Currently deep sleep is only enabled for ATMEGA328
 // There is not a lot of effect as the LoRa and GPS chips consume a lot of power and these chps are currently not switched to power save mode
-#define USE_DEEP_SLEEP  false  // Put the ATMEGA328 chip to deep sleep while not transmitting. set to true or false.  
-#define TIME_TO_SLEEP  15      // This is the number in seconds out of TX_LOOP_TIME that the CPU is in sleep 
-#define TX_LOOP_TIME   30      // This number is in seconds
+#define USE_DEEP_SLEEP false   // Put the ATMEGA328 chip to deep sleep while not transmitting. set to true or false.  
+#define TIME_TO_SLEEP  15       // This is the number in seconds out of TX_LOOP_TIME that the CPU is in sleep. Only valid when USE_DEEP_SLEEP = true
 
+#define TX_LOOP_TIME   30       // When USE_DEEP_SLEEP=false: Number in seconds between transmits
+                                // When USE_DEEP_SLEEP=true : Time between transmits is TIME_TO_SLEEP+TX_LOOP_TIME+time it takes to transmit the data
+                               
 /***********************************************************************************
 * GPS SETTINGS
 *  
@@ -245,12 +247,11 @@ void setup()
 //============================================================================
 void loop()
 {
-    // Watchdog should have been fired before doing anything 
+   // Watchdog should have been fired before doing anything 
   if (watchdogActivated)
   {
      // REset the watrchdog and the sleep timer
      watchdogActivated = false;
-     sleepIterations = 0;
      
      unsigned long currentMillis = millis();
    
@@ -259,7 +260,7 @@ void loop()
      smartDelay(1000);
  
      // Process a non blocking timed loop
-     if (currentMillis - previousTX >= (TX_LOOP_TIME*1000))
+     if (currentMillis - previousTX >= ((unsigned long)TX_LOOP_TIME*(unsigned long)1000))
      {
        // Telemetry loop  
        previousTX = currentMillis;
@@ -291,11 +292,13 @@ void loop()
        {
          Serial.println("Going to sleep...");
          Serial.flush();
+         sleepIterations = 0;    
          while (sleepIterations < TIME_TO_SLEEP)
          {
            sleep();
          }
         Serial.println("Awake!");
+        previousTX = millis();
        }
     }
     watchdogActivated = true; 
