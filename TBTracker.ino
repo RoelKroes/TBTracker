@@ -64,8 +64,8 @@
 #define RTTY_ENABLED true            // Set to true if you want RTTY transmissions (You can use Both LoRa and RTTY or only one of the two) 
 #define RTTY_PAYLOAD_ID  "RTTY-ID"    // Payload ID for RTTY protocol
 #define RTTY_FREQUENCY  434.100      // Can be different from LoRa frequency
-#define RTTY_SHIFT 800
-#define RTTY_BAUD 200                 // Baud rate 100 and up is currently unstable. 75 Baud is recommended.
+#define RTTY_SHIFT 600
+#define RTTY_BAUD 75                 // Baud rate 100 and up is currently unstable. 75 Baud is recommended.
 #define RTTY_STOPBITS 2
 #define RTTY_PREFIX "$$$$$"           
 // RTTY encoding modes (leave this unchanged)
