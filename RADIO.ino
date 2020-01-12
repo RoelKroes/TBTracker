@@ -164,6 +164,9 @@ void SetupRadio()
 //===============================================================================
 void sendRTTY(String TxLine)
 {
+   // Disable the GPS on the softwareserial temporarily 
+   SerialGPS.end();
+   
    SetupRTTY();
    
    // Idle for 5 secs
@@ -172,11 +175,13 @@ void sendRTTY(String TxLine)
    
    // Send the string 
    Serial.print(F("Sending RTTY: "));
+
    Serial.println(TxLine);
+   
    int state = rtty.println(TxLine); 
-     
-   //Serial.print("Result: ");
-   //Serial.println(state);
+
+   // Enable the GPS again.  
+   SerialGPS.begin(GPSBaud);
 }
 
 
