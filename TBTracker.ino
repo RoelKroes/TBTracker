@@ -65,8 +65,8 @@
 #define RTTY_PAYLOAD_ID  "RTTY-ID"    // Payload ID for RTTY protocol
 #define RTTY_FREQUENCY  434.100      // Can be different from LoRa frequency
 #define RTTY_SHIFT 600
-#define RTTY_BAUD 75                 // Baud rate 100 and up is currently unstable. 75 Baud is recommended.
-#define RTTY_STOPBITS 2
+#define RTTY_BAUD 200                 // Baud rate
+#define RTTY_STOPBITS 1
 #define RTTY_PREFIX "$$$$$"           
 // RTTY encoding modes (leave this unchanged)
 #define RTTY_ASCII 0                 // 7 data bits 
@@ -236,7 +236,8 @@ void setup()
   Serial.begin(9600);
   // Setup the Ublox GPS
   SerialGPS.begin(GPSBaud);  //TX, RX
-  Serial.println(F("Serial GPS"));
+
+  // Serial.println(F("Serial GPS"));
 
   // Setup the Radio
   ResetRadio(); 
