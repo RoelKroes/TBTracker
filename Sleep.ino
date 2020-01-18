@@ -43,6 +43,8 @@ void setup_Sleep(void)
 void sleep()
 {
   setup_Sleep();
+  // Set all used power pins to low
+  disable_PowerPins();
   // Set sleep to full power down.  Only external interrupts or 
   // the watchdog timer can wake the CPU!
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
@@ -59,6 +61,7 @@ void sleep()
   // When awake, disable sleep mode and turn on all devices.
   sleep_disable();
   power_all_enable();
+  enable_PowerPins();
 }
 
 //===============================================================================
@@ -69,4 +72,86 @@ ISR(WDT_vect)
   // Note that you shouldn't do much work inside an interrupt handler.
   watchdogActivated = true;
   sleepIterations++;
+}
+
+//===============================================================================
+// Setup the defined power pins for output
+void setup_PowerPins()
+{
+#if (POWER_PIN1 > 0)
+  pinMode(POWER_PIN1, OUTPUT);
+#endif
+
+#if (POWER_PIN2 > 0)
+  pinMode(POWER_PIN2, OUTPUT);
+#endif
+
+#if (POWER_PIN3 > 0)
+  pinMode(POWER_PIN3, OUTPUT);
+#endif
+
+#if (POWER_PIN4 > 0)
+  pinMode(POWER_PIN4, OUTPUT);
+#endif
+
+#if (POWER_PIN5 > 0)
+  pinMode(POWER_PIN5, OUTPUT);
+#endif
+}
+
+
+//===============================================================================
+// Setup the defined power pins for output
+void enable_PowerPins()
+{
+#if (POWER_PIN1 > 0)
+  digitalWrite(POWER_PIN1, HIGH);
+#endif
+
+#if (POWER_PIN2 > 0)
+  digitalWrite(POWER_PIN2, HIGH);
+#endif
+
+#if (POWER_PIN3 > 0)
+  digitalWrite(POWER_PIN3, HIGH);
+#endif
+
+#if (POWER_PIN4 > 0)
+  digitalWrite(POWER_PIN4, HIGH);
+#endif
+
+#if (POWER_PIN5 > 0)
+  digitalWrite(POWER_PIN5, HIGH);
+#endif
+
+}
+
+
+//===============================================================================
+// Setup the defined power pins for output
+void disable_PowerPins()
+{
+  // Only disable the power pins when there it is safe to do so
+  if (CanUsePowerPins)
+  {
+    #if (POWER_PIN1 > 0)
+      digitalWrite(POWER_PIN1, LOW);
+    #endif
+
+    #if (POWER_PIN2 > 0)
+      digitalWrite(POWER_PIN2, LOW);
+    #endif
+
+    #if (POWER_PIN3 > 0)
+      digitalWrite(POWER_PIN3, LOW);
+    #endif
+
+    #if (POWER_PIN4 > 0)
+      digitalWrite(POWER_PIN4, LOW);
+    #endif
+
+    #if (POWER_PIN5 > 0)
+      digitalWrite(POWER_PIN5, LOW);
+    #endif
+  }
 }

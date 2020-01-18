@@ -50,7 +50,7 @@
 #define FSK_BITRATE 100.0
 #define FSK_FREQDEV 50.0
 #define FSK_RXBANDWIDTH 125.0
-#define FSK_POWER 10   // in dBm between 2 and 17. 10 = 10mW
+#define FSK_POWER 10   // in dBm between 2 and 17. 10 = 10mW. Sets also RTTY power
 #define FSK_CURRENTLIMIT 100
 #define FSK_PREAMBLELENGTH 16
 #define FSK_ENABLEOOK false
@@ -113,12 +113,23 @@
 // Allow time for the GPS to re-acquire a fix when using sleep mode!
 // Currently deep sleep is only enabled for ATMEGA328
 // There is not a lot of effect as the LoRa and GPS chips consume a lot of power and these chps are currently not switched to power save mode
-#define USE_DEEP_SLEEP false   // Put the ATMEGA328 chip to deep sleep while not transmitting. set to true or false.  
+#define USE_DEEP_SLEEP false     // Put the ATMEGA328 chip to deep sleep while not transmitting. set to true or false.  
 #define TIME_TO_SLEEP  15       // This is the number in seconds out of TX_LOOP_TIME that the CPU is in sleep. Only valid when USE_DEEP_SLEEP = true
 
-#define TX_LOOP_TIME   30       // When USE_DEEP_SLEEP=false: Number in seconds between transmits
+#define TX_LOOP_TIME   15       // When USE_DEEP_SLEEP=false: Number in seconds between transmits
                                 // When USE_DEEP_SLEEP=true : Time between transmits is TIME_TO_SLEEP+TX_LOOP_TIME+time it takes to transmit the data
-                               
+
+// Define up to 5 pins to power sensors from (for example your GPS). Each Arduino pin can source up to 40mA. All together, the pins can source 150-200 mA
+// Use a transistor as a switch if you need more power. Or use multiple pins in parallel.
+// This will only work when USE_DEEP_SLEEP=true and there is a valid GPS lock.
+// Comment out the pins you use for your sensors or leds. 
+// Set pin value to a valid value.
+#define POWER_PIN1     5
+#define POWER_PIN2     6
+// #define POWER_PIN3     -1
+// #define POWER_PIN4     -1
+// #define POWER_PIN5     -1
+                              
 /***********************************************************************************
 * GPS SETTINGS
 *  
@@ -222,9 +233,10 @@ struct TRTTYSettings
 ************************************************************************************/
 SoftwareSerial SerialGPS(Rx, Tx);
 char Sentence[SENTENCE_LENGTH];
-volatile unsigned long RTTYCounter=0;
-volatile unsigned long LoRaCounter=0;
-volatile unsigned long previousTX = 0;
+unsigned long RTTYCounter=0;
+unsigned long LoRaCounter=0;
+unsigned long previousTX = 0;
+bool CanUsePowerPins = false;
 volatile bool watchdogActivated = true;
 volatile int sleepIterations = 0;
 
@@ -242,6 +254,8 @@ void setup()
   // Setup the Radio
   ResetRadio(); 
   SetupRadio();  
+  setup_PowerPins();
+  enable_PowerPins();
 }
 
 
