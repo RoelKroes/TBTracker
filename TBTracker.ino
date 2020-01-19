@@ -74,6 +74,12 @@
 #define RTTY_ITA2  2                 // Baudot 
 #define RTTY_REPEATS 1 // number of RTTY transmits during a cycle
 
+// Idle carrier in ms before sending actual RTTY string. 
+// Set to a low value (i.e. 1000 or lower) is you have a very stable signal in frequency
+// Set to a high value (i.e. 5000 or even higher) if you have a hard to tune signal
+#define RTTY_IDLE_TIME 1000          
+ 
+
 /***********************************************************************************
 * LORA SETTINGS
 *  

@@ -171,7 +171,7 @@ void sendRTTY(String TxLine)
    
    // Idle for 5 secs
    rtty.idle();     
-   delay(5000);
+   delay(RTTY_IDLE_TIME);
    
    // Send the string 
    Serial.print(F("Sending RTTY: "));
