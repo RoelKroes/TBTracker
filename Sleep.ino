@@ -43,8 +43,6 @@ void setup_Sleep(void)
 void sleep()
 {
   setup_Sleep();
-  // Set all used power pins to low
-  disable_PowerPins();
   // Set sleep to full power down.  Only external interrupts or 
   // the watchdog timer can wake the CPU!
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
@@ -61,7 +59,6 @@ void sleep()
   // When awake, disable sleep mode and turn on all devices.
   sleep_disable();
   power_all_enable();
-  enable_PowerPins();
 }
 
 //===============================================================================
@@ -104,26 +101,32 @@ void setup_PowerPins()
 // Setup the defined power pins for output
 void enable_PowerPins()
 {
-#if (POWER_PIN1 > 0)
-  digitalWrite(POWER_PIN1, HIGH);
-#endif
+  const char* Str = "Enable Pin: "; 
 
-#if (POWER_PIN2 > 0)
-  digitalWrite(POWER_PIN2, HIGH);
-#endif
+  #if (POWER_PIN1 > 0)
+    digitalWrite(POWER_PIN1, HIGH);
+    Serial.print(Str); Serial.println(POWER_PIN1);
+  #endif
 
-#if (POWER_PIN3 > 0)
-  digitalWrite(POWER_PIN3, HIGH);
-#endif
+  #if (POWER_PIN2 > 0)
+    digitalWrite(POWER_PIN2, HIGH);
+    Serial.print(Str); Serial.println(POWER_PIN2);
+  #endif
 
-#if (POWER_PIN4 > 0)
-  digitalWrite(POWER_PIN4, HIGH);
-#endif
+  #if (POWER_PIN3 > 0)
+    digitalWrite(POWER_PIN3, HIGH);
+    Serial.print(Str); Serial.println(POWER_PIN3);
+  #endif
 
-#if (POWER_PIN5 > 0)
-  digitalWrite(POWER_PIN5, HIGH);
-#endif
+  #if (POWER_PIN4 > 0)
+    digitalWrite(POWER_PIN4, HIGH);
+    Serial.print(Str); Serial.println(POWER_PIN4);
+  #endif
 
+  #if (POWER_PIN5 > 0)
+    digitalWrite(POWER_PIN5, HIGH);
+    Serial.print(Str); Serial.println(POWER_PIN5);
+  #endif
 }
 
 
@@ -131,27 +134,31 @@ void enable_PowerPins()
 // Setup the defined power pins for output
 void disable_PowerPins()
 {
+  const char* Str = "Disable Pin: "; 
+  
   // Only disable the power pins when there it is safe to do so
-  if (CanUsePowerPins)
-  {
-    #if (POWER_PIN1 > 0)
-      digitalWrite(POWER_PIN1, LOW);
-    #endif
+  #if (POWER_PIN1 > 0)
+    digitalWrite(POWER_PIN1, LOW);
+    Serial.print(Str); Serial.println(POWER_PIN1);
+  #endif
 
-    #if (POWER_PIN2 > 0)
-      digitalWrite(POWER_PIN2, LOW);
-    #endif
+  #if (POWER_PIN2 > 0)
+    digitalWrite(POWER_PIN2, LOW);
+    Serial.print(Str); Serial.println(POWER_PIN2);
+  #endif
 
-    #if (POWER_PIN3 > 0)
-      digitalWrite(POWER_PIN3, LOW);
-    #endif
+  #if (POWER_PIN3 > 0)
+    digitalWrite(POWER_PIN3, LOW);
+    Serial.print(Str); Serial.println(POWER_PIN3);
+  #endif
 
-    #if (POWER_PIN4 > 0)
-      digitalWrite(POWER_PIN4, LOW);
-    #endif
+  #if (POWER_PIN4 > 0)
+    digitalWrite(POWER_PIN4, LOW);
+    Serial.print(Str); Serial.println(POWER_PIN4);
+  #endif
 
-    #if (POWER_PIN5 > 0)
-      digitalWrite(POWER_PIN5, LOW);
-    #endif
-  }
+  #if (POWER_PIN5 > 0)
+    digitalWrite(POWER_PIN5, LOW);
+    Serial.print(Str); Serial.println(POWER_PIN5);
+  #endif    
 }

@@ -1,4 +1,12 @@
 #include <SoftwareSerial.h>
+#include "settings.h"
+
+/***********************************************************************************
+ *  FIRST THING YOU NEED TO DO IS ADJUST THE SETTINGS IN settings.h
+ *  
+ *  Have FUN!
+ ***********************************************************************************/
+
 
 /***********************************************************************************
  * LoRa and RTTY tracker for Arduino Mini and SX1278
@@ -7,9 +15,6 @@
  * 
  * by Roel Kroes
  * roel@kroes.com
- * 
- * Version 0.1 - 2019-12-19
- * Version 0.2 - 2019-12-23 (Added external voltage support)
  *
  *  
  *  To run this, you need a TTGO T-Deer board or:
@@ -29,160 +34,6 @@
  *  
  *  For payload information and how to get your see the file Misc.ini from this sketch
  ************************************************************************************/
-
-/***********************************************************************************
-* PIN NUMBERS for SX1278
-*  
-* Change if needed
-************************************************************************************/
-#define PIN_NSS   10 
-#define PIN_DIO0  2
-#define PIN_BUSY  -1  // Not used in this sketch for sx1278
-#define PIN_RESET -1  // Not used in this sketch for sx1278
-#define PIN_DIO1  -1  // Not used in this sketch for sx1278
-
-/***********************************************************************************
-* DEFAULT FSK SETTINGS
-*  
-* Normally needs no change
-************************************************************************************/
-#define FSK_FREQUENCY 434.100
-#define FSK_BITRATE 100.0
-#define FSK_FREQDEV 50.0
-#define FSK_RXBANDWIDTH 125.0
-#define FSK_POWER 10   // in dBm between 2 and 17. 10 = 10mW. Sets also RTTY power
-#define FSK_CURRENTLIMIT 100
-#define FSK_PREAMBLELENGTH 16
-#define FSK_ENABLEOOK false
-#define FSK_DATASHAPING 0.5
-
-/***********************************************************************************
-* RTTY SETTINGS
-*  
-* Change when needed
-************************************************************************************/
-#define RTTY_ENABLED true            // Set to true if you want RTTY transmissions (You can use Both LoRa and RTTY or only one of the two) 
-#define RTTY_PAYLOAD_ID  "RTTY-ID"    // Payload ID for RTTY protocol
-#define RTTY_FREQUENCY  434.100      // Can be different from LoRa frequency
-#define RTTY_SHIFT 600
-#define RTTY_BAUD 200                 // Baud rate
-#define RTTY_STOPBITS 1
-#define RTTY_PREFIX "$$$$$"           
-// RTTY encoding modes (leave this unchanged)
-#define RTTY_ASCII 0                 // 7 data bits 
-#define RTTY_ASCII_EXTENDED 1        // 8 data bits
-#define RTTY_ITA2  2                 // Baudot 
-#define RTTY_REPEATS 1 // number of RTTY transmits during a cycle
-
-// Idle carrier in ms before sending actual RTTY string. 
-// Set to a low value (i.e. 1000 or lower) is you have a very stable signal in frequency
-// Set to a high value (i.e. 5000 or even higher) if you have a hard to tune signal
-#define RTTY_IDLE_TIME 1000          
- 
-
-/***********************************************************************************
-* LORA SETTINGS
-*  
-* Change when needed
-************************************************************************************/
-#define LORA_ENABLED true            // Set to true if you want LoRa transmissions (You can use Both LoRa and RTTY or only one of the two)
-#define LORA_PAYLOAD_ID  "LORA-ID"   // Payload ID for LoRa protocol
-#define LORA_FREQUENCY  434.562      // Can be different from RTTY frequency
-#define LORA_BANDWIDTH 125.0
-#define LORA_SPREADFACTOR 9
-#define LORA_CODERATE 7
-#define LORA_PREFIX "$$"             // Some older LoRa software does not accept a prefix of more than 2x "$"
-#define LORA_SYNCWORD 0x12           // for sx1278
-// #define LORA_SYNCWORD 0x1424      // for sx1262 (currently not supported)
-#define LORA_POWER 10                // in dBm between 2 and 17. 10 = 10mW
-#define LORA_CURRENTLIMIT 100
-#define LORA_PREAMBLELENGTH 8
-#define LORA_GAIN 0
-// HAB modes
-// 0 = (normal for telemetry)  Explicit mode, Error coding 4:8, Bandwidth 20.8kHz, SF 11, Low data rate optimize on
-// 1 = (normal for SSDV)       Implicit mode, Error coding 4:5, Bandwidth 20.8kHz,  SF 6, Low data rate optimize off
-// 2 = (normal for repeater)   Explicit mode, Error coding 4:8, Bandwidth 62.5kHz,  SF 8, Low data rate optimize off
-// 3 = (normal for fast SSDV)  Explicit mode, Error coding 4:6, Bandwidth 250kHz,   SF 7, Low data rate optimize off
-// 4 = Test mode not for normal use.
-// 5 = (normal for calling mode)   Explicit mode, Error coding 4:8, Bandwidth 41.7kHz, SF 11, Low data rate optimize off
-// Default UKHAS tracker mode only 0,1,2 and 3 are implemented in this code
-#define LORA_MODE 2  // Mode 2 is usuually used for simple telemetry data
-#define LORA_REPEATS 1 // number of LoRa transmits during a cycle
-
-/***********************************************************************************
-* TRANSMISSIONS SETTINGS
-*  
-* Change if needed
-************************************************************************************/
-#define SENTENCE_LENGTH 100     // Maximum length of telemetry line to send
-
-// Allow time for the GPS to re-acquire a fix when using sleep mode!
-// Currently deep sleep is only enabled for ATMEGA328
-// There is not a lot of effect as the LoRa and GPS chips consume a lot of power and these chps are currently not switched to power save mode
-#define USE_DEEP_SLEEP false     // Put the ATMEGA328 chip to deep sleep while not transmitting. set to true or false.  
-#define TIME_TO_SLEEP  15       // This is the number in seconds out of TX_LOOP_TIME that the CPU is in sleep. Only valid when USE_DEEP_SLEEP = true
-
-#define TX_LOOP_TIME   15       // When USE_DEEP_SLEEP=false: Number in seconds between transmits
-                                // When USE_DEEP_SLEEP=true : Time between transmits is TIME_TO_SLEEP+TX_LOOP_TIME+time it takes to transmit the data
-
-// Define up to 5 pins to power sensors from (for example your GPS). Each Arduino pin can source up to 40mA. All together, the pins can source 150-200 mA
-// Use a transistor as a switch if you need more power. Or use multiple pins in parallel.
-// This will only work when USE_DEEP_SLEEP=true and there is a valid GPS lock.
-// Comment out the pins you use for your sensors or leds. 
-// Set pin value to a valid value.
-#define POWER_PIN1     5
-#define POWER_PIN2     6
-// #define POWER_PIN3     -1
-// #define POWER_PIN4     -1
-// #define POWER_PIN5     -1
-                              
-/***********************************************************************************
-* GPS SETTINGS
-*  
-* Change if needed
-************************************************************************************/
-// GPS Serial device
-// We use SoftwareSerial so these pin numbers are basically free to choose
-// Parameters for the GPS
-static const int Rx = 7, Tx = 8;
-static const uint32_t GPSBaud = 9600;
-
-/***********************************************************************************
-* SENSOR SETTINGS
-*  
-* Change if needed
-* 
-*  You can connect an external voltage directly to the EXTERNALVOLTAGE_PIN as long as the the pin is rated for that voltage
-*  Alteratively, you can use a voltage divider so you can connect a higher voltage, but then you have to calculate the DIVIDER_RATIO yourself
-*  
-*  Voltage divider schema:
-*  
-*                          |-----------------
-*                          |                |
-*                          |               R1            
-*                          |                |
-*                    +/+ ---                |
-*    to external voltage                    |------ To EXTERNALVOLTAGE_PIN
-*                    -/- ---                |
-*                          |                |
-*                          |               R2  
-*                          |                |
-*                          |----------------------- To Arduino GND
-*                          
-*   DIVIDER_RATIO can be calculated by (R1+R2) / R2                       
-************************************************************************************/
-#define USE_EXTERNAL_VOLTAGE false // Set to true if you want to measure an external voltage on the EXTERNALVOLTAGE_PIN 
-#define VCC_OFFSET 0.00            // Offset for error correction in Volts for the internal voltage. Ideally this should be 0.0 but usually is between -0.1 and +0.1 and is chip specific. 
-#define EXT_OFFSET 0.00            // Offset for error correction in Volts for the external voltage. Use it to correct errors when necessary.
-#define EXTERNALVOLTAGE_PIN A1     // Pin to read the external voltage from
-#define SAMPLE_RES 1024            // 1024 for Uno, Mini, Nano, Mega, Micro. Leonardo. 4096 for Zero, Due and MKR  
-#define DIVIDER_RATIO 1.00         // Leave at 1.00 when using no voltage divider. Set to (R1+R2)/R2 when using a voltage divider.
-
-/***********************************************************************************
-* DATA STRUCTS
-*  
-* Normally no change necessary
-************************************************************************************/
 
 // Struct to hold GPS data
 struct TGPS
@@ -242,7 +93,6 @@ char Sentence[SENTENCE_LENGTH];
 unsigned long RTTYCounter=0;
 unsigned long LoRaCounter=0;
 unsigned long previousTX = 0;
-bool CanUsePowerPins = false;
 volatile bool watchdogActivated = true;
 volatile int sleepIterations = 0;
 
@@ -309,9 +159,11 @@ void loop()
           }
        }
        // Goto to sleep after transmissions
-       if (USE_DEEP_SLEEP)
+       if (USE_DEEP_SLEEP && UGPS.Satellites > 3)
        {
          Serial.println("Going to sleep...");
+         // Set all defined power pins to low
+         disable_PowerPins();
          Serial.flush();
          sleepIterations = 0;    
          while (sleepIterations < TIME_TO_SLEEP)
@@ -319,6 +171,8 @@ void loop()
            sleep();
          }
         Serial.println("Awake!");
+        // Set all defined power pins to high
+        enable_PowerPins();
         previousTX = millis();
        }
     }

@@ -59,13 +59,11 @@ static void processGPSData()
     UGPS.Longitude = gps.location.lng();
     UGPS.Latitude = gps.location.lat();
     // Only use the powerpins when there is a GPS locs
-    CanUsePowerPins = true;
  }
  else
  {
    UGPS.Longitude = 0;
    UGPS.Latitude = 0;
-   CanUsePowerPins = false;
  }
 
  // Altitude
