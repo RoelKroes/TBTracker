@@ -1,10 +1,10 @@
 Hardware installation
 
 ===================
-Arduino Nano
+Arduino 
 ===================
 
-SX1278 <-> Arduino Nano
+SX1278 <-> Arduino
 ----------------------
 MISO   -> D12
 SCK    -> D13
@@ -25,6 +25,7 @@ TX     -> D7
 External voltage <-> Arduino Nano
 ---------------------------------
 Voltage Source -> A1 (be sure not to exceed the tolerance of the pins or use a voltage divider)
+Add an optional 100nF capacitor between A1 and GND if the voltage appears to be unstable (possibly due to RF interference).
 
 
 
