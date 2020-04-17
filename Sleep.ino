@@ -25,6 +25,7 @@ void setup_Sleep(void)
   WDTCSR |= (1<<WDCE) | (1<<WDE);
 
   // Set watchdog clock prescaler bits to a value of 8 seconds.
+  // Use this if you want intervals of 8 secs instead of 1 secs
   // WDTCSR = (1<<WDP0) | (1<<WDP3);
   
   // Set watchdog clock prescaler bits to a value of 1 second
@@ -98,67 +99,53 @@ void setup_PowerPins()
 
 
 //===============================================================================
-// Setup the defined power pins for output
+// Set the defined power pins HIGH
 void enable_PowerPins()
 {
-  const char* Str = "Enable Pin: "; 
-
-  #if (POWER_PIN1 > 0)
+#if (POWER_PIN1 > 0)
     digitalWrite(POWER_PIN1, HIGH);
-    Serial.print(Str); Serial.println(POWER_PIN1);
-  #endif
+#endif
 
-  #if (POWER_PIN2 > 0)
+#if (POWER_PIN2 > 0)
     digitalWrite(POWER_PIN2, HIGH);
-    Serial.print(Str); Serial.println(POWER_PIN2);
-  #endif
+#endif
 
-  #if (POWER_PIN3 > 0)
+#if (POWER_PIN3 > 0)
     digitalWrite(POWER_PIN3, HIGH);
-    Serial.print(Str); Serial.println(POWER_PIN3);
-  #endif
+#endif
 
-  #if (POWER_PIN4 > 0)
+#if (POWER_PIN4 > 0)
     digitalWrite(POWER_PIN4, HIGH);
-    Serial.print(Str); Serial.println(POWER_PIN4);
-  #endif
+#endif
 
-  #if (POWER_PIN5 > 0)
+#if (POWER_PIN5 > 0)
     digitalWrite(POWER_PIN5, HIGH);
-    Serial.print(Str); Serial.println(POWER_PIN5);
-  #endif
+#endif
 }
 
 
 //===============================================================================
-// Setup the defined power pins for output
+// Set the defined power pins LOW
 void disable_PowerPins()
-{
-  const char* Str = "Disable Pin: "; 
-  
+{  
   // Only disable the power pins when there it is safe to do so
-  #if (POWER_PIN1 > 0)
+#if (POWER_PIN1 > 0)
     digitalWrite(POWER_PIN1, LOW);
-    Serial.print(Str); Serial.println(POWER_PIN1);
-  #endif
+#endif
 
-  #if (POWER_PIN2 > 0)
+#if (POWER_PIN2 > 0)
     digitalWrite(POWER_PIN2, LOW);
-    Serial.print(Str); Serial.println(POWER_PIN2);
-  #endif
+#endif
 
-  #if (POWER_PIN3 > 0)
+#if (POWER_PIN3 > 0)
     digitalWrite(POWER_PIN3, LOW);
-    Serial.print(Str); Serial.println(POWER_PIN3);
-  #endif
+#endif
 
-  #if (POWER_PIN4 > 0)
+#if (POWER_PIN4 > 0)
     digitalWrite(POWER_PIN4, LOW);
-    Serial.print(Str); Serial.println(POWER_PIN4);
-  #endif
+#endif
 
-  #if (POWER_PIN5 > 0)
+#if (POWER_PIN5 > 0)
     digitalWrite(POWER_PIN5, LOW);
-    Serial.print(Str); Serial.println(POWER_PIN5);
-  #endif    
+#endif    
 }

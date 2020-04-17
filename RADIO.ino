@@ -13,8 +13,9 @@ void SetupRTTY()
 
   // First setup FSK
   SetupFSK();
-  
+#if defined(DEVMODE)          
   Serial.print(F("[RTTY] Initializing ... "));
+#endif
   int16_t state = rtty.begin(RTTYSettings.Frequency,
                      RTTYSettings.Shift,
                      RTTYSettings.Baud,
@@ -23,11 +24,15 @@ void SetupRTTY()
                      
   if(state == ERR_NONE) 
   {
+#if defined(DEVMODE)            
     Serial.println(F("success!"));
+#endif
   } else 
   {
+#if defined(DEVMODE)
     Serial.print(F("failed, code "));
     Serial.println(state);
+#endif
     while(true);
   }
 }
@@ -39,7 +44,9 @@ void SetupFSK()
   // Reset the radio
   ResetRadio();
   // Initialize the SX1278
+#if defined(DEVMODE)  
   Serial.print(F("[SX1278] Initializing ... "));
+#endif
 
  // int16_t state = fsk.beginFSK();
  
@@ -55,12 +62,16 @@ void SetupFSK()
 
   if(state == ERR_NONE) 
   {
+#if defined(DEVMODE)    
     Serial.println(F("success!"));
+#endif
   } 
   else 
   {
+#if defined(DEVMODE)    
     Serial.print(F("failed, code "));
     Serial.println(state);
+#endif
     while(true);
   }
 }
@@ -70,14 +81,17 @@ void SetupFSK()
 void SetupLoRa()
 {
   // Initialize the SX1278
+#if defined(DEVMODE)  
   Serial.print(F("[LoRA] Initializing ... "));
+#endif
 
   ResetRadio();
   // First setup the mode
-  // 0 = (normal for telemetry)  Explicit mode, Error coding 4:8, Bandwidth 20.8kHz, SF 11, Low data rate optimize on
-  // 1 = (normal for SSDV)       Implicit mode, Error coding 4:5, Bandwidth 20.8kHz,  SF 6, Low data rate optimize off
-  // 2 = (normal for repeater)   Explicit mode, Error coding 4:8, Bandwidth 62.5kHz,  SF 8, Low data rate optimize off
-  // 3 = (normal for fast SSDV)  Explicit mode, Error coding 4:6, Bandwidth 250kHz,   SF 7, Low data rate optimize off
+  // 0 = (normal for telemetry)  Explicit mode, Error coding 4:8, Bandwidth 20.8kHz, SF 11, Low data rate optimize on - NOT IMPLEMENTED YET
+  // 1 = (normal for SSDV)       Implicit mode, Error coding 4:5, Bandwidth 20.8kHz,  SF 6, Low data rate optimize off - NOT IMPLEMENTED YET
+  
+  // 2 = (normal for repeater)   Explicit mode, Error coding 4:8, Bandwidth 62.5kHz,  SF 8, Low data rate optimize off - Should work correctly
+  // 3 = (normal for fast SSDV)  Explicit mode, Error coding 4:6, Bandwidth 250kHz,   SF 7, Low data rate optimize off - Should work correctly
   switch (LORA_MODE)
   {
     case 0: 
@@ -120,12 +134,16 @@ void SetupLoRa()
   
   if(state == ERR_NONE) 
   {
+#if defined(DEVMODE)    
     Serial.println(F("success!"));
+#endif    
   } 
   else 
   {
+#if defined(DEVMODE)    
     Serial.print(F("failed, code "));
     Serial.println(state);
+#endif    
     while(true);
   }
 }
@@ -161,14 +179,15 @@ void sendRTTY(String TxLine)
    
    SetupRTTY();
    
-   // Idle for 5 secs
+   // Send only idle carrier to let people get their tuning right
    rtty.idle();     
    delay(RTTY_IDLE_TIME);
    
    // Send the string 
+#if defined(DEVMODE)   
    Serial.print(F("Sending RTTY: "));
-
    Serial.println(TxLine);
+#endif   
    
    int state = rtty.println(TxLine); 
 
@@ -181,9 +200,11 @@ void sendRTTY(String TxLine)
 void sendLoRa(String TxLine)
 {
    SetupLoRa();
-   
+
+#if defined(DEVMODE)      
    Serial.print(F("Sending LoRa: "));
    Serial.println(TxLine);
+#endif
    
    // Send the string
    int state = fsk.transmit(TxLine); 

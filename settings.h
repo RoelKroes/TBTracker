@@ -1,6 +1,4 @@
-
-
-/***********************************************************************************
+/************************************************************************
 * PIN NUMBERS for SX1278
 *  
 * Change if needed
@@ -16,7 +14,7 @@
 *  
 * Normally needs no change
 ************************************************************************************/
-#define FSK_FREQUENCY 434.100
+#define FSK_FREQUENCY 434.113
 #define FSK_BITRATE 100.0
 #define FSK_FREQDEV 50.0
 #define FSK_RXBANDWIDTH 125.0
@@ -32,23 +30,25 @@
 * Change when needed
 ************************************************************************************/
 #define RTTY_ENABLED true            // Set to true if you want RTTY transmissions (You can use Both LoRa and RTTY or only one of the two) 
-#define RTTY_PAYLOAD_ID  "RTTY-ID"   // Payload ID for RTTY protocol
-#define RTTY_FREQUENCY  434.100      // Can be different from LoRa frequency
-#define RTTY_SHIFT 600
-#define RTTY_BAUD 200                // Baud rate
-#define RTTY_STOPBITS 1
+#define RTTY_PAYLOAD_ID  "RTTY_ID"   // Payload ID for RTTY protocol
+#define RTTY_FREQUENCY  434.113      // Can be different from LoRa frequency
+#define RTTY_SHIFT 610
+#define RTTY_BAUD 150                // Baud rate
+#define RTTY_STOPBITS 2
 #define RTTY_PREFIX "$$$$$"          
  
 // RTTY encoding modes (leave this unchanged)
 #define RTTY_ASCII 0                 // 7 data bits 
 #define RTTY_ASCII_EXTENDED 1        // 8 data bits
 #define RTTY_ITA2  2                 // Baudot 
+
+
 #define RTTY_REPEATS 1 // number of RTTY transmits during a cycle
 
 // Idle carrier in ms before sending actual RTTY string. 
 // Set to a low value (i.e. 1000 or lower) if you have a very frequency stable signal
 // Set to a high value (i.e. 5000 or even higher) if you have a hard time to tune the signal
-#define RTTY_IDLE_TIME 1500          
+#define RTTY_IDLE_TIME 2500          
  
 /***********************************************************************************
 * LORA SETTINGS
@@ -69,8 +69,8 @@
 #define LORA_PREAMBLELENGTH 8
 #define LORA_GAIN 0
 // HAB modes
-// 0 = (normal for telemetry)  Explicit mode, Error coding 4:8, Bandwidth 20.8kHz, SF 11, Low data rate optimize on
-// 1 = (normal for SSDV)       Implicit mode, Error coding 4:5, Bandwidth 20.8kHz,  SF 6, Low data rate optimize off
+// 0 = (normal for telemetry)  Explicit mode, Error coding 4:8, Bandwidth 20.8kHz, SF 11, Low data rate optimize on  - NUT SUPPORTED YET
+// 1 = (normal for SSDV)       Implicit mode, Error coding 4:5, Bandwidth 20.8kHz,  SF 6, Low data rate optimize off  - NUT SUPPORTED YET
 // 2 = (normal for repeater)   Explicit mode, Error coding 4:8, Bandwidth 62.5kHz,  SF 8, Low data rate optimize off
 // 3 = (normal for fast SSDV)  Explicit mode, Error coding 4:6, Bandwidth 250kHz,   SF 7, Low data rate optimize off
 // 4 = Test mode not for normal use.
@@ -88,24 +88,26 @@
 
 // Allow time for the GPS to re-acquire a fix when using sleep mode!
 // Currently deep sleep is only enabled for ATMEGA328
-// There is not a lot of effect as the LoRa and GPS chips consume a lot of power and these chps are currently not switched to power save mode
-#define USE_DEEP_SLEEP false    // Put the ATMEGA328 chip to deep sleep while not transmitting. set to true or false.
-                                // The tracker will only go to sleep if there ae more than 3 satellites visible   
+#define USE_DEEP_SLEEP true     // Put the ATMEGA328 chip to deep sleep while not transmitting. set to true or false.
+                                // The tracker will only go to sleep if there are more than 4 satellites visible   
 #define TIME_TO_SLEEP  15       // This is the number in seconds out of TX_LOOP_TIME that the CPU is in sleep. Only valid when USE_DEEP_SLEEP = true
 
-#define TX_LOOP_TIME   15       // When USE_DEEP_SLEEP=false: Number in seconds between transmits
+#define TX_LOOP_TIME   30       // When USE_DEEP_SLEEP=false: Number in seconds between transmits
                                 // When USE_DEEP_SLEEP=true : Time between transmits is TIME_TO_SLEEP+TX_LOOP_TIME+time it takes to transmit the data
 
 // Define up to 5 pins to power sensors from (for example your GPS). Each Arduino pin can source up to 40mA. All together, the pins can source 150-200 mA
-// Use a transistor as a switch if you need more power. Or use multiple pins in parallel.
+// Use a transistor or FET as a switch if you need more power. Or use multiple pins in parallel.
 // This will only work when USE_DEEP_SLEEP=true and there is a valid GPS lock.
 // Comment out the pins you use for your sensors or leds. 
 // Set pin value to a valid value.
-#define POWER_PIN1     5
-// #define POWER_PIN2     6
+#define POWER_PIN1     3
+#define POWER_PIN2     4
 // #define POWER_PIN3     -1
 // #define POWER_PIN4     -1
 // #define POWER_PIN5     -1
+
+
+// #define DEVMODE // Development mode. Uncomment to enable for debugging and see debug info on the serial monitor
                               
 /***********************************************************************************
 * GPS SETTINGS
@@ -115,6 +117,7 @@
 // GPS Serial device
 // We use SoftwareSerial so these pin numbers are basically free to choose
 // Parameters for the GPS
+// White: 7, green: 8
 static const int Rx = 7, Tx = 8;
 static const uint32_t GPSBaud = 9600;
 
@@ -141,6 +144,8 @@ static const uint32_t GPSBaud = 9600;
 *                          |----------------------- To Arduino GND
 *                          
 *   DIVIDER_RATIO can be calculated by (R1+R2) / R2                       
+*   
+*   Optionally add a 100nF capacitor between A1 and GND if the measured voltage seems unstable
 ************************************************************************************/
 #define USE_EXTERNAL_VOLTAGE false // Set to true if you want to measure an external voltage on the EXTERNALVOLTAGE_PIN 
 #define VCC_OFFSET 0.00            // Offset for error correction in Volts for the internal voltage. Ideally this should be 0.0 but usually is between -0.1 and +0.1 and is chip specific. 
@@ -150,7 +155,8 @@ static const uint32_t GPSBaud = 9600;
 #define DIVIDER_RATIO 1.00         // Leave at 1.00 when using no voltage divider. Set to (R1+R2)/R2 when using a voltage divider.
 
 /***********************************************************************************
-* DATA STRUCTS
+* TELEMETRY COUNTERS
 *  
-* Normally no change necessary
+* Uncomment this if you want to reset the counters for LoRa and RTTY set back to 0.
 ************************************************************************************/
+// #define RESET_TRANS_COUNTERS 

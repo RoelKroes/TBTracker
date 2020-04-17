@@ -58,7 +58,6 @@ static void processGPSData()
  {
     UGPS.Longitude = gps.location.lng();
     UGPS.Latitude = gps.location.lat();
-    // Only use the powerpins when there is a GPS locs
  }
  else
  {
@@ -89,6 +88,7 @@ static void processGPSData()
 /*********************************************************************************************************************************/
 void printGPSData()
 {
+#if defined(DEVMODE)
   Serial.print("         Time: "); Serial.print(UGPS.Hours); Serial.print(":"); Serial.print(UGPS.Minutes); Serial.print(":"); Serial.println(UGPS.Seconds);
   Serial.print("     Latitude: "); Serial.println(UGPS.Latitude, 6);
   Serial.print("    Longitude: "); Serial.println(UGPS.Longitude, 6);
@@ -96,6 +96,7 @@ void printGPSData()
   Serial.print("   Satellites: "); Serial.println(UGPS.Satellites);
   Serial.println();
   Serial.println("-------------------------");
+#endif
 }
 
 
@@ -132,9 +133,13 @@ void setGPS_DynamicModel3()
      0x00, 0xFA, 0x00, 0x64, 0x00, 0x2C, 0x01, 0x00, 0x00, 0x00, 0x00, 0x10, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4A, 0x75
    };  
 
+#if defined(DEVMODE)
   Serial.print("Setting pedestrian mode...");
+#endif
   SendUBX(setNav, sizeof(setNav));
+#if defined(DEVMODE)
   Serial.println("Done");
+#endif
 }
 
 /*********************************************************************************************************************************/
@@ -146,8 +151,12 @@ void setGPS_DynamicModel6()
     0xB5, 0x62, 0x06, 0x24, 0x24, 0x00, 0xFF, 0xFF, 0x06, 0x03, 0x00, 0x00, 0x00, 0x00, 0x10, 0x27, 0x00, 0x00, 0x05, 0x00, 0xFA, 
     0x00, 0xFA, 0x00, 0x64, 0x00, 0x2C, 0x01, 0x00, 0x00, 0x00, 0x00, 0x10, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4D, 0xDB
   };
-  
+
+#if defined(DEVMODE)  
   Serial.print("Setting airborne mode...");
+#endif
   SendUBX(setNav, sizeof(setNav));
+#if defined(DEVMODE)  
   Serial.println("Done");
+#endif
 }

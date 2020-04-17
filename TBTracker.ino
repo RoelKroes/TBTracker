@@ -9,32 +9,51 @@
 
 
 /***********************************************************************************
- * LoRa and RTTY tracker for Arduino Mini and SX1278
- * Specially designed for the cheap TTGO T-deer board
- * a TTGO T-Deer board is an Arduino Mini at 3.3v with a SX1278 LoRa chip on board
+ * LoRa and RTTY tracker for Arduino and SX1278
+ * Specially designed for the cheap TTGO T-Deer board
+ * a TTGO T-Deer board is an Arduino Mini with a SX1278 LoRa chip on board
  * 
  * by Roel Kroes
  * roel@kroes.com
  *
  *  
  *  To run this, you need a TTGO T-Deer board or:
- *  1 x ARduino Mini - 3.3v (or compatible Arduino board)
+ *  1 x Arduino (or compatible Arduino board)
  *  1 x SX1278 LoRa chip (or compatible LoRa chip)
  *  1 x BN220 GPS (Ublox compatible / 9600 Baud) or any compatible GPS device
  *    
- *  BN22 <> Arduino Mini
+ *  BN22 <> Arduino
+ *  ----------------------  
  *  VCC -> 3.3V (red wirre)
  *  GND -> GND (black wire)
  *  RX -> D7 (white wire)
  *  TX -> D8 (green wire)
  *  
+ *  (Example for Arduino Nano)
+ *  SX1278 <-> Arduino Nano
+ *  ----------------------
+ *  MISO   -> D12
+ *  SCK    -> D13
+ *  RST    -> Not connected
+ *  GND    -> GND
+ *  DI00   -> D2
+ *  MOSI   -> D11
+ *  NSS    -> D10 
+ *  3V3    -> 3V3
+ *  
  *  Extra librairies needed:
  *  https://github.com/jgromes/RadioLib (Radiolib)
  *  https://github.com/mikalhart/TinyGPSPlus (tinyGPS++)
  *  
- *  For payload information and how to get your see the file Misc.ini from this sketch
+ *  For payload information and how to get your Payload on the map, see the file Misc.ini from this sketch
  ************************************************************************************/
 
+
+/***********************************************************************************
+* DATA STRUCTS
+*  
+* Normally no change necessary
+************************************************************************************/
 // Struct to hold GPS data
 struct TGPS
 {
@@ -90,8 +109,8 @@ struct TRTTYSettings
 ************************************************************************************/
 SoftwareSerial SerialGPS(Rx, Tx);
 char Sentence[SENTENCE_LENGTH];
-unsigned long RTTYCounter=0;
-unsigned long LoRaCounter=0;
+long RTTYCounter=0;
+long LoRaCounter=0;
 unsigned long previousTX = 0;
 volatile bool watchdogActivated = true;
 volatile int sleepIterations = 0;
@@ -105,7 +124,9 @@ void setup()
   // Setup the Ublox GPS
   SerialGPS.begin(GPSBaud);  //TX, RX
 
-  // Serial.println(F("Serial GPS"));
+#if defined(RESET_TRANS_COUNTERS)
+  Reset_Transmission_Counters();
+#endif
 
   // Setup the Radio
   ResetRadio(); 
@@ -141,8 +162,11 @@ void loop()
        { 
           for (int i=1; i <= RTTY_REPEATS; i++)
           {
+            RTTYCounter = EEPROMReadlong(0x00);
             CreateTXLine(RTTY_PAYLOAD_ID, RTTYCounter++, RTTY_PREFIX);
             sendRTTY(Sentence); 
+            // Write the RTTY counter to EEPROM at address 0x00
+            EEPROMWritelong(0x00, RTTYCounter);
           }
        }
 
@@ -154,14 +178,19 @@ void loop()
        { 
           for (int i=1; i <= LORA_REPEATS; i++)
           {
+            LoRaCounter = EEPROMReadlong(0x04);
             CreateTXLine(LORA_PAYLOAD_ID, LoRaCounter++, LORA_PREFIX);
             sendLoRa(Sentence); 
+            // Write the LoRa counter to EEPROM at address 0x04
+            EEPROMWritelong(0x04, LoRaCounter);
           }
        }
        // Goto to sleep after transmissions
-       if (USE_DEEP_SLEEP && UGPS.Satellites > 3)
+       if (USE_DEEP_SLEEP && UGPS.Satellites > 4)
        {
+#if defined(DEVMODE)        
          Serial.println("Going to sleep...");
+#endif
          // Set all defined power pins to low
          disable_PowerPins();
          Serial.flush();
@@ -170,7 +199,9 @@ void loop()
          {
            sleep();
          }
+#if defined(DEVMODE)                 
         Serial.println("Awake!");
+#endif       
         // Set all defined power pins to high
         enable_PowerPins();
         previousTX = millis();
