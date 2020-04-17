@@ -1,14 +1,6 @@
-
 // include the library
 #include <RadioLib.h>
 
-
-// SX1278 has the following connections:
-// NSS pin:   10
-// DIO1 pin:  2
-// DIO2 pin:  3 // not existent set to -1 and not necessary for this project
-// BUSY pin:  9
-// Reset Pin is in pin 7
 SX1278 fsk = new Module(PIN_NSS, PIN_DIO0, PIN_DIO1);
 
 // create RTTY client instance using the FSK module
