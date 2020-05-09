@@ -28,6 +28,7 @@ You will need two extra Arduino libraries to be able to compile this sketch.:
  *  1 x SX1278 LoRa chip (or compatible LoRa chip. Basically it will work with all sx127x series chips)
  *  1 x BN220 GPS (9600 Baud) or any UBlox or compatible GPS device like a NEO6 or NEO8
  
+ Connect the T-Deer as an Arduino Mini to the Arduino IDE.
  Many parameters are user adjustable.
  
  Have fun,
