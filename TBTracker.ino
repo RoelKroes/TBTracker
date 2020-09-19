@@ -86,7 +86,6 @@ struct TFSKSettings
   float FreqDev = FSK_FREQDEV;
   float RXBandwidth = FSK_RXBANDWIDTH;
   int8_t  Power = FSK_POWER;                  // in dbM range 2 - 17
-  uint8_t CurrentLimit = FSK_CURRENTLIMIT;    // in mA
   uint16_t  PreambleLength = FSK_PREAMBLELENGTH;
   bool  EnableOOK = FSK_ENABLEOOK;
   float dataShaping = FSK_DATASHAPING;

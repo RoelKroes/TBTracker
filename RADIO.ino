@@ -55,7 +55,6 @@ void SetupFSK()
                                FSKSettings.FreqDev,
                                FSKSettings.RXBandwidth,
                                FSKSettings.Power,
-                               FSKSettings.CurrentLimit,
                                FSKSettings.PreambleLength,
                                FSKSettings.EnableOOK);
 
@@ -127,7 +126,6 @@ void SetupLoRa()
     LoRaSettings.CodeRate,
     LoRaSettings.SyncWord,
     LoRaSettings.Power,
-    LoRaSettings.CurrentLimit,
     LoRaSettings.PreambleLength, 
     LoRaSettings.Gain
   );

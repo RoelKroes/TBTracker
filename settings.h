@@ -19,7 +19,6 @@
 #define FSK_FREQDEV 50.0
 #define FSK_RXBANDWIDTH 125.0
 #define FSK_POWER 10   // in dBm between 2 and 17. 10 = 10mW (recommended). Sets also RTTY power
-#define FSK_CURRENTLIMIT 100  // Set to 0 for no current limit
 #define FSK_PREAMBLELENGTH 16
 #define FSK_ENABLEOOK false
 #define FSK_DATASHAPING 0.5
