@@ -1,6 +1,7 @@
 // include the library
 #include <RadioLib.h>
 
+// Change 'SX1278' in the line below to 'SX1276' if you have a SX1276 module.
 SX1278 fsk = new Module(PIN_NSS, PIN_DIO0, PIN_DIO1);
 
 // create RTTY client instance using the FSK module
