@@ -1,8 +1,8 @@
 #include <SoftwareSerial.h>
-#include "settings.h"
+#include "Settings.h"
 
 /***********************************************************************************
- *  FIRST THING YOU NEED TO DO IS ADJUST THE SETTINGS IN settings.h
+ *  FIRST THING YOU NEED TO DO IS ADJUST THE SETTINGS IN Settings.h
  *  
  *  Have FUN!
  ***********************************************************************************/
