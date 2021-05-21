@@ -2,10 +2,10 @@
 #include <RadioLib.h>
 
 // Change 'SX1278' in the line below to 'SX1276' if you have a SX1276 module.
-SX1278 fsk = new Module(PIN_NSS, PIN_DIO0, PIN_DIO1);
+SX1278 radio = new Module(PIN_NSS, PIN_DIO0, PIN_DIO1);
 
-// create RTTY client instance using the FSK module
-RTTYClient rtty(&fsk);
+// create RTTY client instance using the radio module
+RTTYClient rtty(&radio);
 
 
 //===============================================================================
@@ -49,9 +49,9 @@ void SetupFSK()
   Serial.print(F("[SX1278] Initializing ... "));
 #endif
 
- // int16_t state = fsk.beginFSK();
+ // int16_t state = radio.beginFSK();
  
-  int16_t state = fsk.beginFSK(FSKSettings.Frequency,
+  int16_t state = radio.beginFSK(FSKSettings.Frequency,
                                FSKSettings.BitRate,
                                FSKSettings.FreqDev,
                                FSKSettings.RXBandwidth,
@@ -119,7 +119,7 @@ void SetupLoRa()
       break;   
   }
   
-  int16_t state = fsk.begin
+  int16_t state = radio.begin
   (
     LoRaSettings.Frequency,
     LoRaSettings.Bandwidth,
@@ -206,5 +206,5 @@ void sendLoRa(String TxLine)
 #endif
    
    // Send the string
-   int state = fsk.transmit(TxLine); 
+   int state = radio.transmit(TxLine); 
 }
