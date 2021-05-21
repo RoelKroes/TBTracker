@@ -196,7 +196,7 @@ void loop()
          sleepIterations = 0;    
          while (sleepIterations < TIME_TO_SLEEP)
          {
-           sleep();
+           my_Sleep();
          }
 #if defined(DEVMODE)                 
         Serial.println("Awake!");
