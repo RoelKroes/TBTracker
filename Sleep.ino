@@ -41,7 +41,7 @@ void setup_Sleep(void)
 
 //===============================================================================
 // Put the Arduino to sleep.
-void sleep()
+void my_Sleep()
 {
   setup_Sleep();
   // Set sleep to full power down.  Only external interrupts or 

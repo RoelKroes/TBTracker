@@ -1,8 +1,8 @@
 #include <SoftwareSerial.h>
-#include "settings.h"
+#include "Settings.h"
 
 /***********************************************************************************
- *  FIRST THING YOU NEED TO DO IS ADJUST THE SETTINGS IN settings.h
+ *  FIRST THING YOU NEED TO DO IS ADJUST THE SETTINGS IN Settings.h
  *  
  *  Have FUN!
  ***********************************************************************************/
@@ -196,7 +196,7 @@ void loop()
          sleepIterations = 0;    
          while (sleepIterations < TIME_TO_SLEEP)
          {
-           sleep();
+           my_Sleep();
          }
 #if defined(DEVMODE)                 
         Serial.println("Awake!");
