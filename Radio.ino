@@ -23,7 +23,7 @@ void SetupRTTY()
                      RTTYSettings.Encoding,
                      RTTYSettings.StopBits  );
                      
-  if(state == ERR_NONE) 
+  if(state == RADIOLIB_ERR_NONE) // Change this to (state == ERR_NONE) if you use an older radiolib library
   {
 #if defined(DEVMODE)            
     Serial.println(F("success!"));
@@ -60,7 +60,7 @@ void SetupFSK()
                                FSKSettings.EnableOOK);
 
 
-  if(state == ERR_NONE) 
+  if(state == RADIOLIB_ERR_NONE) // Change this to (state == ERR_NONE) if you use an older radiolib library
   {
 #if defined(DEVMODE)    
     Serial.println(F("success!"));
@@ -131,7 +131,7 @@ void SetupLoRa()
     LoRaSettings.Gain
   );
   
-  if(state == ERR_NONE) 
+  if(state == RADIOLIB_ERR_NONE) // Change this to (state == ERR_NONE) if you use an older radiolib library
   {
 #if defined(DEVMODE)    
     Serial.println(F("success!"));
