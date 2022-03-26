@@ -31,7 +31,6 @@ static void smartDelay(unsigned long ms)
 /*********************************************************************************************************************************/
 static void processGPSData()
 {
-  byte DesiredMode;
   
   // Number of Satellites
   if (gps.satellites.isValid())
@@ -73,29 +72,19 @@ static void processGPSData()
 
  if (UGPS.Altitude < 0)
    UGPS.Altitude = 0;    
-
- if (UGPS.Altitude > 1000)
-   DesiredMode = AIRBORNE;
- else 
-   DesiredMode = PEDESTRIAN;
-
- // Set the correct flight mode for high altitude
- if (UGPS.FlightMode != DesiredMode)
-   setDesiredMode(DesiredMode);
-    
+   
 }
 
 /*********************************************************************************************************************************/
 void printGPSData()
 {
 #if defined(DEVMODE)
-  Serial.print("         Time: "); Serial.print(UGPS.Hours); Serial.print(":"); Serial.print(UGPS.Minutes); Serial.print(":"); Serial.println(UGPS.Seconds);
-  Serial.print("     Latitude: "); Serial.println(UGPS.Latitude, 6);
-  Serial.print("    Longitude: "); Serial.println(UGPS.Longitude, 6);
-  Serial.print(" Altitude (m): "); Serial.println(UGPS.Altitude);
-  Serial.print("   Satellites: "); Serial.println(UGPS.Satellites);
-  Serial.println();
-  Serial.println("-------------------------");
+  Serial.print(F("Time: ")); Serial.print(UGPS.Hours); Serial.print(":"); Serial.print(UGPS.Minutes); Serial.print(":"); Serial.println(UGPS.Seconds);
+  Serial.print(F(" Lat: ")); Serial.println(UGPS.Latitude, 6);
+  Serial.print(F(" Lon: ")); Serial.println(UGPS.Longitude, 6);
+  Serial.print(F(" Alt: ")); Serial.println(UGPS.Altitude);
+  Serial.print(F("Sats: ")); Serial.println(UGPS.Satellites);
+  Serial.println("------");
 #endif
 }
 
@@ -109,54 +98,4 @@ void SendUBX(unsigned char *Message, int Length)
   {
     SerialGPS.write(Message[i]);
   }
-}
-
-
-/*********************************************************************************************************************************/
-void setDesiredMode(byte aDesiredMode)
-{
-  if (aDesiredMode == PEDESTRIAN)
-    setGPS_DynamicModel3();
-  else if (aDesiredMode == AIRBORNE)
-    setGPS_DynamicModel6();
- 
-  UGPS.FlightMode = aDesiredMode;
-}
-
-/*********************************************************************************************************************************/
-// Pedestrian mode
-void setGPS_DynamicModel3()
-{
-  unsigned char setNav[] = 
-  {
-     0xB5, 0x62, 0x06, 0x24, 0x24, 0x00, 0xFF, 0xFF, 0x03, 0x03, 0x00, 0x00, 0x00, 0x00, 0x10, 0x27, 0x00, 0x00, 0x05, 0x00, 0xFA, 
-     0x00, 0xFA, 0x00, 0x64, 0x00, 0x2C, 0x01, 0x00, 0x00, 0x00, 0x00, 0x10, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4A, 0x75
-   };  
-
-#if defined(DEVMODE)
-  Serial.print("Setting pedestrian mode...");
-#endif
-  SendUBX(setNav, sizeof(setNav));
-#if defined(DEVMODE)
-  Serial.println("Done");
-#endif
-}
-
-/*********************************************************************************************************************************/
-// High altitude flightmode
-void setGPS_DynamicModel6()
-{
-  unsigned char setNav[] = 
-  {
-    0xB5, 0x62, 0x06, 0x24, 0x24, 0x00, 0xFF, 0xFF, 0x06, 0x03, 0x00, 0x00, 0x00, 0x00, 0x10, 0x27, 0x00, 0x00, 0x05, 0x00, 0xFA, 
-    0x00, 0xFA, 0x00, 0x64, 0x00, 0x2C, 0x01, 0x00, 0x00, 0x00, 0x00, 0x10, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4D, 0xDB
-  };
-
-#if defined(DEVMODE)  
-  Serial.print("Setting airborne mode...");
-#endif
-  SendUBX(setNav, sizeof(setNav));
-#if defined(DEVMODE)  
-  Serial.println("Done");
-#endif
 }

@@ -15,7 +15,7 @@ void SetupRTTY()
   // First setup FSK
   SetupFSK();
 #if defined(DEVMODE)          
-  Serial.print(F("[RTTY] Initializing ... "));
+  Serial.print(F("RTTY init.."));
 #endif
   int16_t state = rtty.begin(RTTYSettings.Frequency,
                      RTTYSettings.Shift,
@@ -26,7 +26,7 @@ void SetupRTTY()
   if(state == RADIOLIB_ERR_NONE) // Change this to (state == ERR_NONE) if you use an older radiolib library
   {
 #if defined(DEVMODE)            
-    Serial.println(F("success!"));
+    Serial.println(F("done"));
 #endif
   } else 
   {
@@ -46,7 +46,7 @@ void SetupFSK()
   ResetRadio();
   // Initialize the SX1278
 #if defined(DEVMODE)  
-  Serial.print(F("[SX1278] Initializing ... "));
+  Serial.print(F("[SX1278] init.."));
 #endif
 
  // int16_t state = radio.beginFSK();
@@ -63,7 +63,7 @@ void SetupFSK()
   if(state == RADIOLIB_ERR_NONE) // Change this to (state == ERR_NONE) if you use an older radiolib library
   {
 #if defined(DEVMODE)    
-    Serial.println(F("success!"));
+    Serial.println(F("done"));
 #endif
   } 
   else 
@@ -134,7 +134,7 @@ void SetupLoRa()
   if(state == RADIOLIB_ERR_NONE) // Change this to (state == ERR_NONE) if you use an older radiolib library
   {
 #if defined(DEVMODE)    
-    Serial.println(F("success!"));
+    Serial.println(F("done"));
 #endif    
   } 
   else 
@@ -184,7 +184,7 @@ void sendRTTY(String TxLine)
    
    // Send the string 
 #if defined(DEVMODE)   
-   Serial.print(F("Sending RTTY: "));
+   Serial.print(F("Send RTTY: "));
    Serial.println(TxLine);
 #endif   
    
@@ -201,7 +201,7 @@ void sendLoRa(String TxLine)
    SetupLoRa();
 
 #if defined(DEVMODE)      
-   Serial.print(F("Sending LoRa: "));
+   Serial.print(F("Send LoRa: "));
    Serial.println(TxLine);
 #endif
    

@@ -27,12 +27,13 @@
 * RTTY SETTINGS
 *  
 * Change when needed
+* Default RTTY setting is: 7,N,2 at 100 Baud.
 ************************************************************************************/
 #define RTTY_ENABLED true            // Set to true if you want RTTY transmissions (You can use Both LoRa and RTTY or only one of the two) 
 #define RTTY_PAYLOAD_ID  "RTTY_ID"   // Payload ID for RTTY protocol
 #define RTTY_FREQUENCY  434.113      // Can be different from LoRa frequency
 #define RTTY_SHIFT 610
-#define RTTY_BAUD 150                // Baud rate
+#define RTTY_BAUD 100                // Baud rate
 #define RTTY_STOPBITS 2
 #define RTTY_PREFIX "$$$$$"          
  
@@ -87,7 +88,7 @@
 
 // Allow time for the GPS to re-acquire a fix when using sleep mode!
 // Currently deep sleep is only enabled for ATMEGA328
-#define USE_DEEP_SLEEP true     // Put the ATMEGA328 chip to deep sleep while not transmitting. set to true or false.
+#define USE_DEEP_SLEEP false    // Put the ATMEGA328 chip to deep sleep while not transmitting. set to true or false.
                                 // The tracker will only go to sleep if there are more than 4 satellites visible   
 #define TIME_TO_SLEEP  15       // This is the number in seconds out of TX_LOOP_TIME that the CPU is in sleep. Only valid when USE_DEEP_SLEEP = true
 
