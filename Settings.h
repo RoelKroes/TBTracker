@@ -107,7 +107,8 @@
 // #define POWER_PIN5     -1
 
 
-// #define DEVMODE // Development mode. Uncomment to enable for debugging and see debug info on the serial monitor
+#define DEVMODE // Development mode. Uncomment to enable for debugging and see debug info on the serial monitor
+                // Comment this out if you experience out-of-memory errors.
                               
 /***********************************************************************************
 * GPS SETTINGS
