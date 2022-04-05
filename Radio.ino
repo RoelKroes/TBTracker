@@ -131,6 +131,8 @@ void SetupLoRa()
     LoRaSettings.Gain
   );
   
+  radio.setCRC(true);
+  
   if(state == RADIOLIB_ERR_NONE) // Change this to (state == ERR_NONE) if you use an older radiolib library
   {
 #if defined(DEVMODE)    
