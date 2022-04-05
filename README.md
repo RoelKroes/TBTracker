@@ -35,6 +35,9 @@ Note that currently setting different flightmodes in uBlox GPS modules is not su
  Connect the T-Deer as an Arduino Mini to the Arduino IDE.
  Many parameters are user adjustable in settings.h
  
+ The Arduino Pro mini has a rather small memory capacity. If you run into memory issues, consider disabling RTTY or LORA in the settings.h file. 
+ Also disabling DEVMODE in settings.h will free up a lot of memory at the cost of no serial output. 
+ 
  Have fun,
  
  Roel.
