@@ -58,9 +58,9 @@
 #define LORA_ENABLED true            // Set to true if you want LoRa transmissions (You can use Both LoRa and RTTY or only one of the two)
 #define LORA_PAYLOAD_ID  "LORA-ID"   // Payload ID for LoRa protocol
 #define LORA_FREQUENCY  434.562      // Can be different from RTTY frequency
-#define LORA_BANDWIDTH 125.0
-#define LORA_SPREADFACTOR 9
-#define LORA_CODERATE 7
+#define LORA_BANDWIDTH 125.0         // Do not change, change LORA_MODE instead
+#define LORA_SPREADFACTOR 9          // Do not change, change LORA_MODE instead
+#define LORA_CODERATE 7              // Do not change, change LORA_MODE instead
 #define LORA_PREFIX "$$"             // Some older LoRa software does not accept a prefix of more than 2x "$"
 #define LORA_SYNCWORD 0x12           // for sx1278
 // #define LORA_SYNCWORD 0x1424      // for sx1262 (currently not supported)
@@ -76,7 +76,7 @@
 // 4 = Test mode not for normal use.
 // 5 = (normal for calling mode)   Explicit mode, Error coding 4:8, Bandwidth 41.7kHz, SF 11, Low data rate optimize off
 // Default UKHAS tracker mode only 0,1,2 and 3 are implemented in this code
-#define LORA_MODE 2  // Mode 2 is usuually used for simple telemetry data
+#define LORA_MODE 2  // Mode 2 is usually used for simple telemetry data
 #define LORA_REPEATS 1 // number of LoRa transmits during a cycle
 
 /***********************************************************************************
