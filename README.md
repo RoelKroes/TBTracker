@@ -1,10 +1,10 @@
 # TBTracker
 Plug and Play RTTY and LoRa High Altitude Balloon Tracker for Arduino and SX127x (or Hope RFM9x).
 
-TBTracker is a sketch for a tracker for high altitude weather balloons. It will send telemetry data in RTTY and LoRa format.
+TBTracker is a sketch for a tracker for high altitude weather balloons. It will transmit telemetry data in RTTY and LoRa format.
 It is designed to send telemetry data in the correct format for https://tracker.habhub.org/ and/or https://amateur.sondehub.org
 
-It can send data in RTTY or LoRa format on different frequencies and with different callsigns.
+It can transmit data in RTTY or LoRa format on different frequencies and with different callsigns.
 
 Currently it supports:
 - Time
@@ -39,7 +39,7 @@ Many parameters are user adjustable in settings.h
 The Arduino Pro mini has a rather small memory capacity. If you run into memory issues, consider disabling RTTY or LORA in the settings.h file. 
 Also disabling DEVMODE in settings.h will free up a lot of memory at the cost of no serial output. 
  
-To receive data produced by TBTracker you can use any program that can receive RTTY or LoRa transmissions. For example:
+To receive transmissions by TBTracker you can use any program that can receive RTTY or LoRa transmissions. For example:
 - DL-FLDIGI (RTTY)
 - LoRa-gateway (LoRa)
  
