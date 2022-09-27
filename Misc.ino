@@ -26,7 +26,7 @@
 *     12.0      = Internal (chip) temperature in Celsius
 *     4.61      = VCC voltage
 *     3.71      = External voltage on analog pin A1
-*     *         = seprator
+*     *         = seperator
 *     109F      = Checksum
 *     
 * The LoRa payload looks the same, except for the callsign (if you changed that).     
@@ -54,9 +54,14 @@ void CreateTXLine(const char *PayloadID, unsigned long aCounter, const char *aPr
          
    dtostrf(UGPS.Latitude, 7, 5, LatitudeString);
    dtostrf(UGPS.Longitude, 7, 5, LongitudeString);   
-   
+
+#if defined(USE_FIELDSTR)               
    sprintf(Sentence,
-            "%s%s,%ld,%02d:%02d:%02d,%s,%s,%ld,%u,%s,%s,%s",
+            "%s%s,%ld,%02d:%02d:%02d,%s,%s,%ld,%u,%s,%s,%s,%s"
+#else
+             "%s%s,%ld,%02d:%02d:%02d,%s,%s,%ld,%u,%s,%s,%s"
+#endif
+            ,
             aPrefix,
             PayloadID,
             aCounter,
@@ -67,7 +72,12 @@ void CreateTXLine(const char *PayloadID, unsigned long aCounter, const char *aPr
             UGPS.Satellites,
             InternalTemp,
             BattVoltage,
-            ExtVoltage);
+            ExtVoltage
+#if defined(USE_FIELDSTR)            
+            ,
+            FIELDSTR
+#endif                        
+            );
 
    Count = strlen(Sentence);
 

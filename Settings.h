@@ -29,7 +29,7 @@
 * Change when needed
 * Default RTTY setting is: 7,N,2 at 100 Baud.
 ************************************************************************************/
-#define RTTY_ENABLED true            // Set to true if you want RTTY transmissions (You can use Both LoRa and RTTY or only one of the two) 
+#define RTTY_ENABLED false           // Set to true if you want RTTY transmissions (You can use Both LoRa and RTTY or only one of the two) 
 #define RTTY_PAYLOAD_ID  "RTTY_ID"   // Payload ID for RTTY protocol
 #define RTTY_FREQUENCY  434.113      // Can be different from LoRa frequency
 #define RTTY_SHIFT 610
@@ -48,7 +48,7 @@
 // Idle carrier in ms before sending actual RTTY string. 
 // Set to a low value (i.e. 1000 or lower) if you have a very frequency stable signal
 // Set to a high value (i.e. 5000 or even higher) if you have a hard time to tune the signal
-#define RTTY_IDLE_TIME 2500          
+#define RTTY_IDLE_TIME 4000          
  
 /***********************************************************************************
 * LORA SETTINGS
@@ -121,6 +121,51 @@
 // White: 7, green: 8
 static const int Rx = 7, Tx = 8;
 static const uint32_t GPSBaud = 9600;
+
+/***********************************************************************************
+* SONDEHUB EXTRA FIELDS SETTINGS
+*  
+* For displaying extra fields at amateur.sondehub.org, we need to define which fields are
+* in the telemetry after the lat, lon, alt fields
+* This can be done by adding a specific metadata string after the last telemetry field
+* This is supported by the various receivers made by Dave Akerman,
+* See: https://www.daveakerman.com/?page_id=2410
+* 
+* 0  PayloadID
+* 1 Counter
+* 2 Time
+* 3 Latitude
+* 4 Longitude
+* 5 Altitude
+* 6 Satellites
+* 7 Speed
+* 8 Heading
+* 9 Battery Voltage
+* A InternalTemperature
+* B ExternalTemperature
+* C PredictedLatitude
+* D PredictedLongitude
+* E CutdownStatus
+* F LastPacketSNR
+* G LastPacketRSSI
+* H ReceivedCommandCount
+* I-N ExtraFields
+* O MaximumAltitude
+* P Battery Current
+* Q External Temperature 2
+* R Pressure
+* S Humidity
+* T CDA
+* U Predicted Landing Speed
+* V Time Till Landing
+* W Last Command Received
+* 
+* Our string would be: "0123456A9I"
+* You can disable FIELDSTR by undefining it, if you want.
+************************************************************************************/
+#define USE_FIELDSTR
+#define FIELDSTR "0123456A9I"
+
 
 /***********************************************************************************
 * SENSOR SETTINGS
