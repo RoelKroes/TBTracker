@@ -57,11 +57,16 @@ static void processGPSData()
  {
     UGPS.Longitude = gps.location.lng();
     UGPS.Latitude = gps.location.lat();
+    UGPS.Heading = gps.course.deg();
  }
  else
  {
    UGPS.Longitude = 0;
    UGPS.Latitude = 0;
+   UGPS.Heading = 0;
+   //UGPS.Longitude = 5.1645;
+   //UGPS.Latitude = 52.2179;
+   //UGPS.Heading = 10;
  }
 
  // Altitude

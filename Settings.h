@@ -14,7 +14,7 @@
 *  
 * Normally needs no change
 ************************************************************************************/
-#define FSK_FREQUENCY 434.113
+#define FSK_FREQUENCY 434.126
 #define FSK_BITRATE 100.0
 #define FSK_FREQDEV 50.0
 #define FSK_RXBANDWIDTH 125.0
@@ -29,13 +29,13 @@
 * Change when needed
 * Default RTTY setting is: 7,N,2 at 100 Baud.
 ************************************************************************************/
-#define RTTY_ENABLED false           // Set to true if you want RTTY transmissions (You can use Both LoRa and RTTY or only one of the two) 
-#define RTTY_PAYLOAD_ID  "RTTY_ID"   // Payload ID for RTTY protocol
-#define RTTY_FREQUENCY  434.113      // Can be different from LoRa frequency
+#define RTTY_ENABLED false            // Set to true if you want RTTY transmissions (You can use Both LoRa and RTTY or only one of the two) 
+#define RTTY_PAYLOAD_ID  "RTTY_ID"    // Payload ID for RTTY protocol
+#define RTTY_FREQUENCY  434.126      // Can be different from LoRa frequency
 #define RTTY_SHIFT 610
 #define RTTY_BAUD 100                // Baud rate
 #define RTTY_STOPBITS 2
-#define RTTY_PREFIX "$$$$$"          
+#define RTTY_PREFIX "$$$$$$"          
  
 // RTTY encoding modes (leave this unchanged)
 #define RTTY_ASCII 0                 // 7 data bits 
@@ -56,26 +56,24 @@
 * Change when needed
 ************************************************************************************/
 #define LORA_ENABLED true            // Set to true if you want LoRa transmissions (You can use Both LoRa and RTTY or only one of the two)
-#define LORA_PAYLOAD_ID  "LORA-ID"   // Payload ID for LoRa protocol
-#define LORA_FREQUENCY  434.562      // Can be different from RTTY frequency
+#define LORA_PAYLOAD_ID  "LORA_ID"   // Payload ID for LoRa protocol
+#define LORA_FREQUENCY  434.126      // Can be different from RTTY frequency
 #define LORA_BANDWIDTH 125.0         // Do not change, change LORA_MODE instead
 #define LORA_SPREADFACTOR 9          // Do not change, change LORA_MODE instead
 #define LORA_CODERATE 7              // Do not change, change LORA_MODE instead
-#define LORA_PREFIX "$$"             // Some older LoRa software does not accept a prefix of more than 2x "$"
-#define LORA_SYNCWORD 0x12           // for sx1278
-// #define LORA_SYNCWORD 0x1424      // for sx1262 (currently not supported)
+#define LORA_PREFIX "$$"             // Prefix for "Telemetry". Some older LoRa software does not accept a prefix of more than 2x "$"
+#define LORA_SYNCWORD 0x12           // Default syncword
 #define LORA_POWER 10                // in dBm between 2 and 17. 10 = 10mW (recommended)
 #define LORA_CURRENTLIMIT 100
 #define LORA_PREAMBLELENGTH 8
 #define LORA_GAIN 0
 // HAB modes
-// 0 = (normal for telemetry)  Explicit mode, Error coding 4:8, Bandwidth 20.8kHz, SF 11, Low data rate optimize on  - NUT SUPPORTED YET
-// 1 = (normal for SSDV)       Implicit mode, Error coding 4:5, Bandwidth 20.8kHz,  SF 6, Low data rate optimize off  - NUT SUPPORTED YET
-// 2 = (normal for repeater)   Explicit mode, Error coding 4:8, Bandwidth 62.5kHz,  SF 8, Low data rate optimize off
-// 3 = (normal for fast SSDV)  Explicit mode, Error coding 4:6, Bandwidth 250kHz,   SF 7, Low data rate optimize off
-// 4 = Test mode not for normal use.
-// 5 = (normal for calling mode)   Explicit mode, Error coding 4:8, Bandwidth 41.7kHz, SF 11, Low data rate optimize off
-// Default UKHAS tracker mode only 0,1,2 and 3 are implemented in this code
+// 0 = (normal for telemetry)  Explicit mode, Error coding 4:8, Bandwidth 20.8kHz, SF 11, Low data rate optimize on  - SUPPORTED
+// 1 = (normal for SSDV)       Implicit mode, Error coding 4:5, Bandwidth 20.8kHz,  SF 6, Low data rate optimize off - SUPPORTED
+// 2 = (normal for repeater)   Explicit mode, Error coding 4:8, Bandwidth 62.5kHz,  SF 8, Low data rate optimize off - SUPPORTED
+// 3 = (normal for fast SSDV)  Explicit mode, Error coding 4:6, Bandwidth 250kHz,   SF 7, Low data rate optimize off - SUPPORTED
+// 4 = Test mode not for normal use. - NOT SUPPORTED
+// 5 = (normal for calling mode)   Explicit mode, Error coding 4:8, Bandwidth 41.7kHz, SF 11, Low data rate optimize off - SUPPORTED
 #define LORA_MODE 2  // Mode 2 is usually used for simple telemetry data
 #define LORA_REPEATS 1 // number of LoRa transmits during a cycle
 
@@ -92,20 +90,8 @@
                                 // The tracker will only go to sleep if there are more than 4 satellites visible   
 #define TIME_TO_SLEEP  15       // This is the number in seconds out of TX_LOOP_TIME that the CPU is in sleep. Only valid when USE_DEEP_SLEEP = true
 
-#define TX_LOOP_TIME   30       // When USE_DEEP_SLEEP=false: Number in seconds between transmits
+#define TX_LOOP_TIME   45       // When USE_DEEP_SLEEP=false: Number in seconds between transmits
                                 // When USE_DEEP_SLEEP=true : Time between transmits is TIME_TO_SLEEP+TX_LOOP_TIME+time it takes to transmit the data
-
-// Define up to 5 pins to power sensors from (for example your GPS). Each Arduino pin can source up to 40mA. All together, the pins can source 150-200 mA
-// Use a transistor or FET as a switch if you need more power. Or use multiple pins in parallel.
-// This will only work when USE_DEEP_SLEEP=true and there is a valid GPS lock.
-// Comment out the pins you use for your sensors or leds. 
-// Set pin value to a valid value.
-#define POWER_PIN1     3
-#define POWER_PIN2     4
-// #define POWER_PIN3     -1
-// #define POWER_PIN4     -1
-// #define POWER_PIN5     -1
-
 
 #define DEVMODE // Development mode. Uncomment to enable for debugging and see debug info on the serial monitor
                 // Comment this out if you experience out-of-memory errors.
@@ -119,15 +105,15 @@
 // We use SoftwareSerial so these pin numbers are basically free to choose
 // Parameters for the GPS
 // White: 7, green: 8
-static const int Rx = 7, Tx = 8;
+static const int Rx = 8, Tx = 7;
 static const uint32_t GPSBaud = 9600;
 
 /***********************************************************************************
 * SONDEHUB EXTRA FIELDS SETTINGS
 *  
-* For displaying extra fields at amateur.sondehub.org, we need to define which fields are
+* For displaying extra fields at sondehub, we need to define which fields are
 * in the telemetry after the lat, lon, alt fields
-* This can be done by adding a specific metadata string after the last telemetry field
+* This can be done by adding a specific string after the last telemetry field
 * This is supported by the various receivers made by Dave Akerman,
 * See: https://www.daveakerman.com/?page_id=2410
 * 
@@ -160,45 +146,12 @@ static const uint32_t GPSBaud = 9600;
 * V Time Till Landing
 * W Last Command Received
 * 
-* Our string would be: "0123456A9I"
+* Our string would be: "01234568A9"
 * You can disable FIELDSTR by undefining it, if you want.
 ************************************************************************************/
 #define USE_FIELDSTR
-#define FIELDSTR "0123456A9I"
+#define FIELDSTR "01234568A9"
 
-
-/***********************************************************************************
-* SENSOR SETTINGS
-*  
-* Change if needed
-* 
-*  You can connect an external voltage directly to the EXTERNALVOLTAGE_PIN as long as the the pin is rated for that voltage
-*  Alteratively, you can use a voltage divider so you can connect a higher voltage, but then you have to calculate the DIVIDER_RATIO yourself
-*  
-*  Voltage divider schema:
-*  
-*                          |-----------------
-*                          |                |
-*                          |               R1            
-*                          |                |
-*                    +/+ ---                |
-*    to external voltage                    |------ To EXTERNALVOLTAGE_PIN
-*                    -/- ---                |
-*                          |                |
-*                          |               R2  
-*                          |                |
-*                          |----------------------- To Arduino GND
-*                          
-*   DIVIDER_RATIO can be calculated by (R1+R2) / R2                       
-*   
-*   Optionally add a 100nF capacitor between A1 and GND if the measured voltage seems unstable
-************************************************************************************/
-#define USE_EXTERNAL_VOLTAGE false // Set to true if you want to measure an external voltage on the EXTERNALVOLTAGE_PIN 
-#define VCC_OFFSET 0.00            // Offset for error correction in Volts for the internal voltage. Ideally this should be 0.0 but usually is between -0.1 and +0.1 and is chip specific. 
-#define EXT_OFFSET 0.00            // Offset for error correction in Volts for the external voltage. Use it to correct errors when necessary.
-#define EXTERNALVOLTAGE_PIN A1     // Pin to read the external voltage from
-#define SAMPLE_RES 1024            // 1024 for Uno, Mini, Nano, Mega, Micro. Leonardo. 4096 for Zero, Due and MKR  
-#define DIVIDER_RATIO 1.00         // Leave at 1.00 when using no voltage divider. Set to (R1+R2)/R2 when using a voltage divider.
 
 /***********************************************************************************
 * TELEMETRY COUNTERS

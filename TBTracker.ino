@@ -48,6 +48,15 @@
  *  For payload information and how to get your Payload on the map, see the file Misc.ini from this sketch
  ************************************************************************************/
 
+#define TBTRACKER_VERSION v0.1.0
+/***********************************************************************************
+* V0.1.0
+* 2023-01-20 - Added support for LoRa HAB mode 0
+* 2023-01-20 - Added support for LoRa HAB mode 1 (Telemetry only)
+* 2023-01-20 - Added support for LoRa HAB mode 3
+* 2023-01-20 - Added support for LoRa HAB mode 5
+* 2023-01-20 - Added support for Low Data Rate Optimization
+************************************************************************************/
 
 /***********************************************************************************
 * DATA STRUCTS
@@ -62,6 +71,7 @@ struct TGPS
   long Altitude;
   unsigned int Satellites;
   byte FlightMode;
+  unsigned int Heading;
 } UGPS;
 
 // Struct to hold LoRA settings
@@ -119,7 +129,8 @@ volatile int sleepIterations = 0;
 void setup()
 {
   // Setup Serial for debugging
-  Serial.begin(9600);
+  Serial.begin(57600);
+  
   // Setup the Ublox GPS
   SerialGPS.begin(GPSBaud);  //TX, RX
 
@@ -130,8 +141,6 @@ void setup()
   // Setup the Radio
   ResetRadio(); 
   SetupRadio();  
-  setup_PowerPins();
-  enable_PowerPins();
 }
 
 
@@ -190,8 +199,6 @@ void loop()
 #if defined(DEVMODE)        
          Serial.println("Start sleep..");
 #endif
-         // Set all defined power pins to low
-         disable_PowerPins();
          Serial.flush();
          sleepIterations = 0;    
          while (sleepIterations < TIME_TO_SLEEP)
@@ -201,8 +208,6 @@ void loop()
 #if defined(DEVMODE)                 
         Serial.println("Awake!");
 #endif       
-        // Set all defined power pins to high
-        enable_PowerPins();
         previousTX = millis();
        }
     }

@@ -1,31 +1,4 @@
 
-//===============================================================================
-// Read an external voltage from an analog PIN by referencing the 1.1v internal reference  
-// DO NOT CONNECT A HIGHER VOLTAGE THAN THE PIN IS RATED FOR (or use a voltage divider)
-float ReadExternalVoltage()
-{
-  float internalV = 0.0;
-  float externalV = 0.0;
-
-  // Get a reference to compare the external voltage with
-  internalV = ReadVCC();
-  
-  // Read the external voltage
-  if (USE_EXTERNAL_VOLTAGE)
-  {
-    analogReference(DEFAULT);
-    for (int i = 1; i <=5; i++)
-    {
-      externalV += analogRead(EXTERNALVOLTAGE_PIN);
-    }
-    externalV = externalV / 5;
-    return ((internalV / SAMPLE_RES) * externalV * DIVIDER_RATIO)+EXT_OFFSET;
-  }
-  else
-  {
-    return 0.0;
-  }
-}
 
 //===============================================================================
 // Read the VCC voltage by referencing the 1.1v internal reference
@@ -50,7 +23,7 @@ float ReadVCC()
     avgmv+=result;
   }
    
-  return (avgmv / reps / 1000.0) + VCC_OFFSET;
+  return (avgmv / reps / 1000.0);
 }
 
 

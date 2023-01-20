@@ -1,22 +1,20 @@
 # TBTracker
 Plug and Play RTTY and LoRa High Altitude Balloon Tracker for Arduino and SX127x (or Hope RFM9x).
 
-TBTracker is a sketch for a tracker for high altitude weather balloons. It will transmit telemetry data in RTTY and LoRa format.
-It is designed to send telemetry data in the correct format for https://tracker.habhub.org/ and/or https://amateur.sondehub.org
+TBTracker is a sketch for a tracker for high altitude weather balloons. It will send telemetry data in RTTY and LoRa format.
+It is designed to send telemetry data in the correct format for https://tracker.habhub.org/
 
-It can transmit data in RTTY or LoRa format on different frequencies and with different callsigns.
+It can send data in RTTY or LoRa format on different frequencies and with different callsigns.
 
 Currently it supports:
 - Time
 - Longitude
 - Latitude
 - Altitude
-
-Some extra fields can be transmitted as well but not all are visible on Sondehub and Habhub (see the settings file in the code):
 - Number of satellites visible
 - Internal temperature
 - Internal voltage
-- External voltage 
+- External voltage
 
 The code as is, is for the SX1278 module. If you have a SX1276, then change line 5 in radio.ino. See the comments in that file.
 
@@ -34,15 +32,12 @@ You will need two extra Arduino libraries to be able to compile this sketch.:
 
 Note that currently setting different flightmodes in uBlox GPS modules is not supported. This could cause GPS failures above 18km when using uBlox GPS modules. I recommend using the ATGM336H GPS modules.
  
-Many parameters are user adjustable in settings.h
+ Connect the T-Deer as an Arduino Mini to the Arduino IDE.
+ Many parameters are user adjustable in settings.h
  
-The Arduino Pro mini has a rather small memory capacity. If you run into memory issues, consider disabling RTTY or LORA in the settings.h file. 
-Also disabling DEVMODE in settings.h will free up a lot of memory at the cost of no serial output. 
+ The Arduino Pro mini has a rather small memory capacity. If you run into memory issues, consider disabling RTTY or LORA in the settings.h file. 
+ Also disabling DEVMODE in settings.h will free up a lot of memory at the cost of no serial output. 
  
-To receive transmissions by TBTracker you can use any program that can receive RTTY or LoRa transmissions. For example:
-- DL-FLDIGI (RTTY)
-- LoRa-gateway (LoRa)
+ Have fun,
  
-Have fun,
- 
-Roel.
+ Roel.
