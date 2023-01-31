@@ -1,7 +1,6 @@
 // include the library
 #include <RadioLib.h>
 
-// Packet length for LoRa transmissions with spreading factor 6.
 #define PACKETLEN 255
 
 // Change 'SX1278' in the line below to 'SX1276' if you have a SX1276 module.
@@ -89,8 +88,12 @@ void SetupLoRa()
 #endif
 
   ResetRadio();
-
   // First setup the mode
+  // 0 = (normal for telemetry)  Explicit mode, Error coding 4:8, Bandwidth 20.8kHz, SF 11, Low data rate optimize on - NOT IMPLEMENTED YET
+  // 1 = (normal for SSDV)       Implicit mode, Error coding 4:5, Bandwidth 20.8kHz,  SF 6, Low data rate optimize off - NOT IMPLEMENTED YET
+  
+  // 2 = (normal for repeater)   Explicit mode, Error coding 4:8, Bandwidth 62.5kHz,  SF 8, Low data rate optimize off - Should work correctly
+  // 3 = (normal for fast SSDV)  Explicit mode, Error coding 4:6, Bandwidth 250kHz,   SF 7, Low data rate optimize off - Should work correctly
   switch (LORA_MODE)
   {
     case 0: 
@@ -136,24 +139,23 @@ void SetupLoRa()
     LoRaSettings.Gain
   );
   
-  radio.setCRC(true);
-
   switch(LORA_MODE) 
   {
     case 0:
       radio.forceLDRO(true);
-      radio.explicitHeader();
+      radio.setCRC(true);  
     break;
     case 1:
-      radio.autoLDRO();
       radio.implicitHeader(PACKETLEN);
+      //radio.forceLDRO(true);
+      radio.setCRC(true);
     break;
     default:
-      radio.autoLDRO();
       radio.explicitHeader();
+      //radio.autoLDRO();
+      radio.setCRC(true);
     break;
   }  
-
   
   if(state == RADIOLIB_ERR_NONE) // Change this to (state == ERR_NONE) if you use an older radiolib library
   {
@@ -190,8 +192,8 @@ void ResetRadio()
 void SetupRadio()
 {
   // Setting up the radio
-  SetupRTTY();
-  SetupLoRa();
+  if (RTTY_ENABLED) {SetupRTTY();}
+  if (LORA_ENABLED) {SetupLoRa();}
 }
 
 //===============================================================================
@@ -235,7 +237,7 @@ void sendLoRa(String TxLine)
     case 1:
       int i;
       int j; 
-      // Send the string packed into a packet with length PACKETLEN
+      // Send the string 
       char buf[PACKETLEN];
       for (j=0; j<PACKETLEN; j++) { buf[j] = '\0';}
       for (i=0; i<TxLine.length(); i++) {buf[i] = TxLine[i];}

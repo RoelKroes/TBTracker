@@ -48,15 +48,6 @@
  *  For payload information and how to get your Payload on the map, see the file Misc.ini from this sketch
  ************************************************************************************/
 
-#define TBTRACKER_VERSION v0.1.0
-/***********************************************************************************
-* V0.1.0
-* 2023-01-20 - Added support for LoRa HAB mode 0
-* 2023-01-20 - Added support for LoRa HAB mode 1 (Telemetry only)
-* 2023-01-20 - Added support for LoRa HAB mode 3
-* 2023-01-20 - Added support for LoRa HAB mode 5
-* 2023-01-20 - Added support for Low Data Rate Optimization
-************************************************************************************/
 
 /***********************************************************************************
 * DATA STRUCTS
@@ -130,7 +121,6 @@ void setup()
 {
   // Setup Serial for debugging
   Serial.begin(57600);
-  
   // Setup the Ublox GPS
   SerialGPS.begin(GPSBaud);  //TX, RX
 
@@ -172,9 +162,9 @@ void loop()
           {
             RTTYCounter = EEPROMReadlong(0x00);
             CreateTXLine(RTTY_PAYLOAD_ID, RTTYCounter++, RTTY_PREFIX);
-            sendRTTY(Sentence); 
             // Write the RTTY counter to EEPROM at address 0x00
             EEPROMWritelong(0x00, RTTYCounter);
+            sendRTTY(Sentence); 
           }
        }
 
@@ -188,9 +178,9 @@ void loop()
           {
             LoRaCounter = EEPROMReadlong(0x04);
             CreateTXLine(LORA_PAYLOAD_ID, LoRaCounter++, LORA_PREFIX);
-            sendLoRa(Sentence); 
             // Write the LoRa counter to EEPROM at address 0x04
             EEPROMWritelong(0x04, LoRaCounter);
+            sendLoRa(Sentence); 
           }
        }
        // Goto to sleep after transmissions
