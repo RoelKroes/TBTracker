@@ -47,7 +47,15 @@
  *  
  *  For payload information and how to get your Payload on the map, see the file Misc.ini from this sketch
  ************************************************************************************/
-
+/***********************************************************************************
+* V0.1.0
+* 2023-01-20 - Added support for LoRa HAB mode 0
+* 2023-01-20 - Added support for LoRa HAB mode 1 (Telemetry only)
+* 2023-01-20 - Added support for LoRa HAB mode 3
+* 2023-01-20 - Added support for LoRa HAB mode 5
+* 2023-01-20 - Added support for Low Data Rate Optimization
+***********************************************************************************/
+#define TBTRACKER_VERSION v0.1.0
 
 /***********************************************************************************
 * DATA STRUCTS
