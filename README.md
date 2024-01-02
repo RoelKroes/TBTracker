@@ -20,7 +20,7 @@ The code as is, is for the SX1278 module. If you have a SX1276, then change line
 
 You will need two extra Arduino libraries to be able to compile this sketch.:
 
- https://github.com/jgromes/RadioLib (Radiolib)
+ https://github.com/jgromes/RadioLib (Radiolib, use version 5.5.0 or lower to overcome out of memory errors if you are using an Arduino mini) 
  
  https://github.com/mikalhart/TinyGPSPlus (tinyGPS++)
  
