@@ -1,4 +1,7 @@
 # TBTracker
+
+(If you are working with an esp32 mcu, please consider using https://github.com/RoelKroes/TBTracker-ESP32 ) 
+
 Plug and Play RTTY and LoRa High Altitude Balloon Tracker for Arduino and SX127x (or Hope RFM9x).
 
 TBTracker is a sketch for a tracker for high altitude weather balloons. It will send telemetry data in RTTY and LoRa format.
